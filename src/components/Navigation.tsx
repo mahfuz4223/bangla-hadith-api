@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, BookOpen, Code, Home, Moon, Sun, Users, Star } from 'lucide-react';
+import { Menu, BookOpen, Code, Home, Moon, Sun, Users, Star, Search } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const menuItems = [
     { path: '/', label: 'হোম', icon: Home },
@@ -18,6 +21,14 @@ export const Navigation = () => {
     { path: '/api', label: 'API', icon: Code },
     { path: '/about', label: 'সম্পর্কে', icon: Users },
   ];
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsOpen(false);
+    }
+  };
 
   const NavLink = ({ path, children, className }: { path: string, children: React.ReactNode, className?: string }) => {
     const isActive = location.pathname === path;
@@ -49,7 +60,22 @@ export const Navigation = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation & Search */}
+          <div className="hidden md:flex flex-1 items-center justify-center px-8">
+            <form onSubmit={handleSearchSubmit} className="w-full max-w-sm">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="হাদিস অনুসন্ধান করুন..."
+                  className="w-full pl-10 font-bengali"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </form>
+          </div>
+
           <div className="hidden md:flex items-center space-x-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -90,7 +116,7 @@ export const Navigation = () => {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
+              <SheetContent side="right" className="w-full sm:w-80">
                 <div className="flex flex-col space-y-2 mt-8">
                   <div className="text-center pb-4 border-b mb-4">
                     <h2 className="text-xl font-bold text-gradient-primary font-bengali">
@@ -100,6 +126,19 @@ export const Navigation = () => {
                       ৬টি প্রধান হাদিস গ্রন্থ
                     </p>
                   </div>
+
+                  <form onSubmit={handleSearchSubmit} className="p-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="search"
+                        placeholder="অনুসন্ধান করুন..."
+                        className="w-full pl-10 font-bengali"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                  </form>
                   
                   {menuItems.map((item) => {
                     const Icon = item.icon;
