@@ -11,6 +11,7 @@ import { ApiDocumentation } from "./components/ApiDocumentation";
 import { AboutPage } from "./components/AboutPage";
 import { HadithReader } from "./components/HadithReader";
 import { FavoritesPage } from "./components/FavoritesPage";
+import { SearchPage } from "./components/SearchPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="read" element={<HadithReader />} />
               <Route path="read/:bookSlug/:hadithNumber" element={<HadithReader />} />
               <Route path="favorites" element={<FavoritesPage />} />
+              <Route path="search" element={<SearchPage />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
