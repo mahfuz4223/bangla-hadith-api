@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { BookOpen, Code, Database, Star, Users, Globe } from 'lucide-react';
 import heroBanner from '@/assets/hero-banner.jpg';
+import { SearchComponent } from './SearchComponent';
 
 interface HomePageProps {
   onViewChange: (view: 'reader' | 'api' | 'about') => void;
+  onSearch: (bookSlug: string, hadithNumber: number) => void;
 }
 
-export const HomePage = ({ onViewChange }: HomePageProps) => {
+export const HomePage = ({ onViewChange, onSearch }: HomePageProps) => {
   const features = [
     {
       icon: BookOpen,
@@ -93,6 +95,13 @@ export const HomePage = ({ onViewChange }: HomePageProps) => {
               </Button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Search Section */}
+      <section className="py-10 bg-background -mt-16 relative z-10">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SearchComponent onSearch={onSearch} />
         </div>
       </section>
 
