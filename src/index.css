@@ -2,41 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Islamic themed design system with elegant colors and typography */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors inspired by Islamic art - Deep emerald theme */
+    --background: 155 15% 98%;
+    --foreground: 155 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 155 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 155 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Islamic green with gold accents */
+    --primary: 155 45% 25%;
+    --primary-foreground: 155 15% 98%;
+    --primary-glow: 155 55% 35%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 155 25% 95%;
+    --secondary-foreground: 155 45% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 155 15% 95%;
+    --muted-foreground: 155 15% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 75% 55%;
+    --accent-foreground: 155 25% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 155 15% 88%;
+    --input: 155 15% 95%;
+    --ring: 155 45% 25%;
 
-    --radius: 0.5rem;
+    /* Islamic inspired gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(155 45% 25%), hsl(155 55% 35%));
+    --gradient-gold: linear-gradient(135deg, hsl(45 75% 55%), hsl(45 85% 65%));
+    --gradient-subtle: linear-gradient(180deg, hsl(155 15% 98%), hsl(155 15% 95%));
+    
+    /* Elegant shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(155 45% 25% / 0.3);
+    --shadow-glow: 0 0 40px hsl(155 55% 35% / 0.4);
+    
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +71,35 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode with deep Islamic colors */
+    --background: 155 25% 8%;
+    --foreground: 155 15% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 155 25% 10%;
+    --card-foreground: 155 15% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 155 25% 10%;
+    --popover-foreground: 155 15% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 155 55% 65%;
+    --primary-foreground: 155 25% 8%;
+    --primary-glow: 155 65% 75%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 155 25% 15%;
+    --secondary-foreground: 155 15% 95%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 155 25% 15%;
+    --muted-foreground: 155 15% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 85% 65%;
+    --accent-foreground: 155 25% 8%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 155 15% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 155 25% 15%;
+    --input: 155 25% 15%;
+    --ring: 155 55% 65%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +117,51 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-bengali;
+    line-height: 1.7;
+  }
+
+  /* Typography classes */
+  .font-bengali {
+    font-family: 'Noto Sans Bengali', system-ui, sans-serif;
+  }
+  
+  .font-arabic {
+    font-family: 'Amiri', serif;
+  }
+
+  /* Custom utility classes */
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .bg-gradient-gold {
+    background: var(--gradient-gold);
+  }
+
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
   }
 }
