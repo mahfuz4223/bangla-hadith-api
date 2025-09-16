@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, BookOpen, Code, Home, Moon, Sun } from 'lucide-react';
+import { Menu, BookOpen, Code, Home, Moon, Sun, Users } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 interface NavigationProps {
-  currentView: 'home' | 'reader' | 'api';
-  onViewChange: (view: 'home' | 'reader' | 'api') => void;
+  currentView: 'home' | 'reader' | 'api' | 'about';
+  onViewChange: (view: 'home' | 'reader' | 'api' | 'about') => void;
 }
 
 export const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
@@ -17,9 +17,10 @@ export const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
     { id: 'home' as const, label: 'হোম', icon: Home },
     { id: 'reader' as const, label: 'হাদিস পড়ুন', icon: BookOpen },
     { id: 'api' as const, label: 'API ডকুমেন্টেশন', icon: Code },
+    { id: 'about' as const, label: 'সম্পর্কে', icon: Users },
   ];
 
-  const handleNavigation = (view: 'home' | 'reader' | 'api') => {
+  const handleNavigation = (view: 'home' | 'reader' | 'api' | 'about') => {
     onViewChange(view);
     setIsOpen(false);
   };

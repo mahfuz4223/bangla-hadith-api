@@ -66,13 +66,42 @@ export const ApiDocumentation = () => {
           হাদিস API ডকুমেন্টেশন
         </h1>
         <p className="text-lg text-muted-foreground font-bengali">
-          ৬টি প্রধান হাদিস গ্রন্থের সম্পূর্ণ বাংলা অনুবাদ - সম্পূর্ণ ফ্রি API
+          ৬টি প্রধান হাদিস গ্রন্থের সম্পূর্ণ বাংলা অনুবাদ - আমাদের API ব্যবহার করুন
         </p>
-        <Badge variant="secondary" className="bg-gradient-gold text-accent-foreground">
-          <Database className="h-4 w-4 mr-1" />
-          100% Free API
-        </Badge>
+        <div className="flex flex-wrap justify-center gap-2">
+          <Badge variant="secondary" className="bg-gradient-gold text-accent-foreground">
+            <Database className="h-4 w-4 mr-1" />
+            আমাদের API ব্যবহার করুন
+          </Badge>
+          <Badge variant="outline" className="border-red-500 text-red-600">
+            GitHub API সরাসরি ব্যবহার করবেন না
+          </Badge>
+        </div>
       </div>
+
+      {/* Important Notice */}
+      <Card className="shadow-elegant border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800">
+        <CardHeader>
+          <CardTitle className="font-bengali text-amber-700 dark:text-amber-400 flex items-center">
+            ⚠️ গুরুত্বপূর্ণ নোটিস
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-amber-800 dark:text-amber-200 font-bengali font-medium">
+            দয়া করে GitHub এর raw API সরাসরি ব্যবহার করবেন না। আমাদের প্রোভাইড করা API endpoint গুলো ব্যবহার করুন।
+          </p>
+          <div className="bg-white/50 dark:bg-black/20 p-3 rounded-lg">
+            <h4 className="font-bengali font-medium text-amber-900 dark:text-amber-100 mb-2">কেন আমাদের API ব্যবহার করবেন:</h4>
+            <ul className="text-sm text-amber-800 dark:text-amber-200 font-bengali space-y-1">
+              <li>✅ স্থিতিশীল এবং নির্ভরযোগ্য</li>
+              <li>✅ রেট লিমিটিং এবং ক্যাশিং সহ</li>
+              <li>✅ উন্নত পারফরমেন্স</li>
+              <li>✅ প্রপার CORS সাপোর্ট</li>
+              <li>✅ API ডকুমেন্টেশন এবং সাপোর্ট</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* API Endpoints */}
       {apiEndpoints.map((section, sectionIndex) => (
@@ -149,7 +178,7 @@ export const ApiDocumentation = () => {
             ব্যবহারের নির্দেশনা
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <h4 className="font-medium font-bengali">Chapter API</h4>
@@ -164,14 +193,62 @@ export const ApiDocumentation = () => {
               </p>
             </div>
           </div>
+
+          {/* API Usage Examples */}
+          <div className="bg-gradient-subtle p-4 rounded-lg border">
+            <h4 className="font-medium font-bengali mb-3">API ব্যবহারের উদাহরণ:</h4>
+            <div className="space-y-3">
+              <div className="bg-background p-3 rounded border">
+                <h5 className="text-sm font-medium font-bengali text-primary mb-1">JavaScript/Fetch:</h5>
+                <pre className="text-xs bg-muted p-2 rounded overflow-x-auto">
+                  <code>{`fetch('https://your-api-domain.com/api/hadith/bukhari/1')
+  .then(response => response.json())
+  .then(data => console.log(data));`}</code>
+                </pre>
+              </div>
+              <div className="bg-background p-3 rounded border">
+                <h5 className="text-sm font-medium font-bengali text-primary mb-1">cURL:</h5>
+                <pre className="text-xs bg-muted p-2 rounded overflow-x-auto">
+                  <code>{`curl -X GET "https://your-api-domain.com/api/hadith/bukhari/1"`}</code>
+                </pre>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-muted/50 p-4 rounded-lg">
             <h4 className="font-medium font-bengali mb-2">গুরুত্বপূর্ণ তথ্য:</h4>
             <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground font-bengali">
+              <li>আমাদের API endpoints ব্যবহার করুন, GitHub এর raw files নয়</li>
               <li>সব API সম্পূর্ণ ফ্রি এবং কোন authentication প্রয়োজন নেই</li>
               <li>ডেটা JSON ফরম্যাটে পাবেন</li>
               <li>হাদিসের বাংলা অনুবাদ এবং আরবি মূল পাঠ উভয়ই আছে</li>
               <li>সূত্র উল্লেখের সময় দয়া করে যথাযথভাবে credit দিন</li>
+              <li>রেট লিমিটিং: প্রতি মিনিটে ১০০ রিকুয়েস্ট</li>
+              <li>প্রোডাকশনে ব্যবহারের আগে আমাদের সাথে যোগাযোগ করুন</li>
             </ul>
+          </div>
+
+          {/* Integration Guide */}
+          <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+            <h4 className="font-medium font-bengali mb-3 text-primary">ইন্টিগ্রেশন গাইড:</h4>
+            <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground font-bengali">
+              <div>
+                <h5 className="font-medium text-foreground mb-2">Web Applications:</h5>
+                <ul className="space-y-1">
+                  <li>• React, Vue, Angular</li>
+                  <li>• JavaScript, TypeScript</li>
+                  <li>• CORS enabled</li>
+                </ul>
+              </div>
+              <div>
+                <h5 className="font-medium text-foreground mb-2">Mobile Apps:</h5>
+                <ul className="space-y-1">
+                  <li>• React Native, Flutter</li>
+                  <li>• Android (Java/Kotlin)</li>
+                  <li>• iOS (Swift/Objective-C)</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

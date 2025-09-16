@@ -3,9 +3,10 @@ import { Navigation } from '@/components/Navigation';
 import { HomePage } from '@/components/HomePage';
 import { HadithReader } from '@/components/HadithReader';
 import { ApiDocumentation } from '@/components/ApiDocumentation';
+import { AboutPage } from '@/components/AboutPage';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'reader' | 'api'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'reader' | 'api' | 'about'>('home');
 
   const renderContent = () => {
     switch (currentView) {
@@ -15,6 +16,8 @@ const Index = () => {
         return <HadithReader />;
       case 'api':
         return <ApiDocumentation />;
+      case 'about':
+        return <AboutPage />;
       default:
         return <HomePage onViewChange={setCurrentView} />;
     }

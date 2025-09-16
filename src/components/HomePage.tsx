@@ -5,7 +5,7 @@ import { BookOpen, Code, Database, Star, Users, Globe } from 'lucide-react';
 import heroBanner from '@/assets/hero-banner.jpg';
 
 interface HomePageProps {
-  onViewChange: (view: 'reader' | 'api') => void;
+  onViewChange: (view: 'reader' | 'api' | 'about') => void;
 }
 
 export const HomePage = ({ onViewChange }: HomePageProps) => {
