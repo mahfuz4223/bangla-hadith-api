@@ -1,47 +1,12 @@
-import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Navigation } from '@/components/Navigation';
-import { HomePage } from '@/components/HomePage';
-import { HadithReader } from '@/components/HadithReader';
-import { ApiDocumentation } from '@/components/ApiDocumentation';
-import { AboutPage } from '@/components/AboutPage';
-
-interface SearchQuery {
-  bookSlug: string;
-  hadithNumber: number;
-}
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'reader' | 'api' | 'about'>('home');
-  const [searchQuery, setSearchQuery] = useState<SearchQuery | null>(null);
-
-  const handleSearch = (bookSlug: string, hadithNumber: number) => {
-    setSearchQuery({ bookSlug, hadithNumber });
-    setCurrentView('reader');
-  };
-
-  const renderContent = () => {
-    switch (currentView) {
-      case 'home':
-        return <HomePage onViewChange={setCurrentView} onSearch={handleSearch} />;
-      case 'reader':
-        return <HadithReader
-                  initialBook={searchQuery?.bookSlug}
-                  initialHadithNumber={searchQuery?.hadithNumber}
-                />;
-      case 'api':
-        return <ApiDocumentation />;
-      case 'about':
-        return <AboutPage />;
-      default:
-        return <HomePage onViewChange={setCurrentView} onSearch={handleSearch} />;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background">
-      <Navigation currentView={currentView} onViewChange={setCurrentView} />
+      <Navigation />
       <main>
-        {renderContent()}
+        <Outlet />
       </main>
       
       {/* Footer */}

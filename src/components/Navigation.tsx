@@ -1,28 +1,33 @@
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, BookOpen, Code, Home, Moon, Sun, Users } from 'lucide-react';
+import { Menu, BookOpen, Code, Home, Moon, Sun, Users, Star } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { cn } from '@/lib/utils';
 
-interface NavigationProps {
-  currentView: 'home' | 'reader' | 'api' | 'about';
-  onViewChange: (view: 'home' | 'reader' | 'api' | 'about') => void;
-}
-
-export const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
+export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const location = useLocation();
 
   const menuItems = [
-    { id: 'home' as const, label: 'হোম', icon: Home },
-    { id: 'reader' as const, label: 'হাদিস পড়ুন', icon: BookOpen },
-    { id: 'api' as const, label: 'API ডকুমেন্টেশন', icon: Code },
-    { id: 'about' as const, label: 'সম্পর্কে', icon: Users },
+    { path: '/', label: 'হোম', icon: Home },
+    { path: '/read', label: 'হাদিস পড়ুন', icon: BookOpen },
+    { path: '/favorites', label: 'পছন্দের তালিকা', icon: Star },
+    { path: '/api', label: 'API', icon: Code },
+    { path: '/about', label: 'সম্পর্কে', icon: Users },
   ];
 
-  const handleNavigation = (view: 'home' | 'reader' | 'api' | 'about') => {
-    onViewChange(view);
-    setIsOpen(false);
+  const NavLink = ({ path, children, className }: { path: string, children: React.ReactNode, className?: string }) => {
+    const isActive = location.pathname === path;
+    return (
+      <Link to={path} onClick={() => setIsOpen(false)}>
+        <Button variant={isActive ? "default" : "ghost"} className={cn("w-full", className)}>
+          {children}
+        </Button>
+      </Link>
+    );
   };
 
   return (
@@ -30,7 +35,7 @@ export const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3" onClick={() => setIsOpen(false)}>
             <div className="bg-gradient-primary p-2 rounded-lg">
               <BookOpen className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -42,22 +47,17 @@ export const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
                 ৬টি প্রধান হাদিস গ্রন্থ
               </p>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
               return (
-                <Button
-                  key={item.id}
-                  variant={currentView === item.id ? "default" : "ghost"}
-                  onClick={() => handleNavigation(item.id)}
-                  className="font-bengali transition-smooth"
-                >
+                <NavLink key={item.path} path={item.path} className="font-bengali transition-smooth">
                   <Icon className="h-4 w-4 mr-2" />
                   {item.label}
-                </Button>
+                </NavLink>
               );
             })}
             
@@ -91,8 +91,8 @@ export const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
-                <div className="flex flex-col space-y-4 mt-8">
-                  <div className="text-center pb-4 border-b">
+                <div className="flex flex-col space-y-2 mt-8">
+                  <div className="text-center pb-4 border-b mb-4">
                     <h2 className="text-xl font-bold text-gradient-primary font-bengali">
                       হাদিস বাংলা
                     </h2>
@@ -104,15 +104,10 @@ export const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
                   {menuItems.map((item) => {
                     const Icon = item.icon;
                     return (
-                      <Button
-                        key={item.id}
-                        variant={currentView === item.id ? "default" : "ghost"}
-                        onClick={() => handleNavigation(item.id)}
-                        className="justify-start font-bengali text-lg py-6"
-                      >
+                      <NavLink key={item.path} path={item.path} className="justify-start font-bengali text-lg py-6">
                         <Icon className="h-5 w-5 mr-3" />
                         {item.label}
-                      </Button>
+                      </NavLink>
                     );
                   })}
                 </div>
