@@ -49,8 +49,77 @@ export const AboutPage = () => {
         </CardContent>
       </Card>
 
-      {/* Data Source Credit */}
+      {/* Developer Information */}
       <Card className="shadow-elegant border-primary/20">
+        <CardHeader>
+          <CardTitle className="font-bengali text-gradient-primary flex items-center">
+            <Code className="h-5 w-5 mr-2" />
+            ডেভেলপার তথ্য
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-gradient-subtle p-4 rounded-lg border border-primary/20">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold font-bengali">Mahfuz Rahman</h3>
+              <Badge variant="secondary" className="bg-gradient-gold">
+                <Code className="h-3 w-3 mr-1" />
+                সিস্টেম ডেভেলপার
+              </Badge>
+            </div>
+            <p className="text-muted-foreground font-bengali mb-4">
+              এই সম্পূর্ণ হাদিস বাংলা অ্যাপ্লিকেশন এবং API সিস্টেম Mahfuz Rahman (mahfuz4223) দ্বারা ডিজাইন ও ডেভেলপ করা হয়েছে। 
+              তিনি একজন পূর্ণাঙ্গ সফটওয়্যার ডেভেলপার যিনি ইসলামিক প্রযুক্তি সমাধান তৈরিতে বিশেষজ্ঞ।
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <div className="bg-background/50 p-3 rounded">
+                <h4 className="font-medium font-bengali mb-2">দক্ষতা ও অভিজ্ঞতা:</h4>
+                <ul className="text-sm text-muted-foreground font-bengali space-y-1">
+                  <li>• React.js & TypeScript ডেভেলপমেন্ট</li>
+                  <li>• Modern UI/UX ডিজাইন</li>
+                  <li>• API ডেভেলপমেন্ট ও ইন্টিগ্রেশন</li>
+                  <li>• ইসলামিক অ্যাপ্লিকেশন ডেভেলপমেন্ট</li>
+                  <li>• বাংলা টাইপোগ্রাফি ও লোকালাইজেশন</li>
+                </ul>
+              </div>
+              <div className="bg-background/50 p-3 rounded">
+                <h4 className="font-medium font-bengali mb-2">প্রকল্পের বৈশিষ্ট্য:</h4>
+                <ul className="text-sm text-muted-foreground font-bengali space-y-1">
+                  <li>• ইসলামিক থিমড ডিজাইন সিস্টেম</li>
+                  <li>• রেসপন্সিভ ও অ্যাক্সেসিবল UI</li>
+                  <li>• পারফরমেন্স অপটিমাইজড</li>
+                  <li>• SEO ফ্রেন্ডলি আর্কিটেকচার</li>
+                  <li>• ডার্ক/লাইট থিম সাপোর্ট</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open('https://github.com/mahfuz4223', '_blank')}
+                className="font-bengali"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                GitHub প্রোফাইল
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open('https://github.com/mahfuz4223/hadithbangla-app', '_blank')}
+                className="font-bengali"
+              >
+                <Code className="h-4 w-4 mr-2" />
+                প্রকল্পের সোর্স কোড
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Data Source Credit */}
+      <Card className="shadow-elegant border-secondary/20">
         <CardHeader>
           <CardTitle className="font-bengali text-gradient-primary flex items-center">
             <GitBranch className="h-5 w-5 mr-2" />
@@ -58,7 +127,7 @@ export const AboutPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-gradient-subtle p-4 rounded-lg border border-primary/20">
+          <div className="bg-gradient-subtle p-4 rounded-lg border border-secondary/20">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg font-semibold font-bengali">MD Rifat Khan</h3>
               <Badge variant="secondary" className="bg-gradient-gold">
@@ -78,7 +147,7 @@ export const AboutPage = () => {
                 className="font-bengali"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
-                GitHub রিপোজিটরি দেখুন
+                হাদিস ডেটা রিপোজিটরি
               </Button>
               <Button
                 variant="outline"
@@ -103,6 +172,22 @@ export const AboutPage = () => {
               <li>• সুনান ইবনে মাজাহ (৪৩৪১ হাদিস)</li>
             </ul>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Collaboration Section */}
+      <Card className="shadow-elegant bg-gradient-subtle border-accent/20">
+        <CardHeader>
+          <CardTitle className="font-bengali text-gradient-gold flex items-center">
+            <Users className="h-5 w-5 mr-2" />
+            সহযোগিতা ও অংশীদারিত্ব
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground font-bengali mb-4">
+            এই প্রকল্পটি MD Rifat Khan এর মূল্যবান ডেটা সংগ্রহ এবং Mahfuz Rahman এর প্রযুক্তিগত দক্ষতার 
+            সমন্বয়ে তৈরি। উভয়ের অবদানেই এই চমৎকার ইসলামিক জ্ঞান প্ল্যাটফর্ম সম্ভব হয়েছে।
+          </p>
         </CardContent>
       </Card>
 
