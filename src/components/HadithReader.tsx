@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Loader2, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { isBookmarked, addBookmark, removeBookmark } from '@/lib/bookmarks';
+import { cn } from '@/lib/utils';
 
 interface Hadith {
   hadith_id: number;
@@ -21,11 +24,6 @@ interface HadithBook {
   totalHadith: number;
 }
 
-interface HadithReaderProps {
-  initialBook?: string;
-  initialHadithNumber?: number;
-}
-
 const hadithBooks: HadithBook[] = [
   { name: 'সহীহ বুখারী', nameAr: 'صحيح البخاري', slug: 'Bukhari', totalHadith: 7563 },
   { name: 'সহীহ মুসলিম', nameAr: 'صحيح مسلم', slug: 'Muslim', totalHadith: 7563 },
@@ -35,56 +33,98 @@ const hadithBooks: HadithBook[] = [
   { name: 'সুনান আত-তিরমিযী', nameAr: 'سنن الترمذي', slug: 'At-tirmizi', totalHadith: 3956 },
 ];
 
-export const HadithReader = ({ initialBook, initialHadithNumber }: HadithReaderProps) => {
-  const [selectedBook, setSelectedBook] = useState<string>(initialBook || '');
-  const [hadithNumber, setHadithNumber] = useState<number>(initialHadithNumber || 1);
+export const HadithReader = () => {
+  const { bookSlug, hadithNumber: hadithNumberStr } = useParams<{ bookSlug: string; hadithNumber: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const [selectedBook, setSelectedBook] = useState<string>(bookSlug || '');
+  const [hadithNumber, setHadithNumber] = useState<number>(parseInt(hadithNumberStr || '1', 10));
   const [hadith, setHadith] = useState<Hadith | null>(null);
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const [isFavorited, setIsFavorited] = useState(false);
 
   const currentBook = hadithBooks.find(book => book.slug === selectedBook);
 
-  const fetchHadith = async (bookSlug: string, hadithId: number) => {
-    if (!bookSlug || !hadithId) return;
-    
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `https://cdn.jsdelivr.net/gh/md-rifatkhan/hadithbangla@main/${bookSlug}/hadith/${hadithId}.json`
-      );
-      
-      if (!response.ok) {
-        throw new Error('হাদিস লোড করতে সমস্যা হয়েছে');
-      }
-      
-      const data = await response.json();
-      setHadith(data.hadith);
-    } catch (error) {
-      toast({
-        title: 'ত্রুটি',
-        description: 'হাদিস লোড করতে সমস্যা হয়েছে',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (selectedBook) {
-      fetchHadith(selectedBook, hadithNumber);
-    }
-  }, [selectedBook, hadithNumber]);
+    const fetchHadith = async (slug: string, id: number) => {
+      if (!slug || !id) return;
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `https://cdn.jsdelivr.net/gh/md-rifatkhan/hadithbangla@main/${slug}/hadith/${id}.json`
+        );
+        if (!response.ok) throw new Error('হাদিস লোড করতে সমস্যা হয়েছে');
+        const data = await response.json();
+        setHadith(data.hadith);
+        setIsFavorited(isBookmarked(slug, id));
+      } catch (error) {
+        toast({
+          title: 'ত্রুটি',
+          description: 'হাদিস লোড করতে সমস্যা হয়েছে',
+          variant: 'destructive',
+        });
+        setHadith(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleNextHadith = () => {
-    if (currentBook && hadithNumber < currentBook.totalHadith) {
-      setHadithNumber(prev => prev + 1);
+    if (bookSlug && hadithNumberStr) {
+      const num = parseInt(hadithNumberStr, 10);
+      setSelectedBook(bookSlug);
+      setHadithNumber(num);
+      fetchHadith(bookSlug, num);
+    }
+  }, [bookSlug, hadithNumberStr, toast]);
+
+  const handleBookSelect = (slug: string) => {
+    setSelectedBook(slug);
+    navigate(`/read/${slug}/1`);
+  };
+
+  const navigateHadith = (offset: number) => {
+    if (currentBook) {
+      const newHadithNumber = hadithNumber + offset;
+      if (newHadithNumber > 0 && newHadithNumber <= currentBook.totalHadith) {
+        navigate(`/read/${selectedBook}/${newHadithNumber}`);
+      }
     }
   };
 
-  const handlePrevHadith = () => {
-    if (hadithNumber > 1) {
-      setHadithNumber(prev => prev - 1);
+  const toggleFavorite = () => {
+    if (!bookSlug || !hadithNumber) return;
+    if (isFavorited) {
+      removeBookmark(bookSlug, hadithNumber);
+      toast({ title: 'পছন্দ তালিকা থেকে সরানো হয়েছে' });
+    } else {
+      addBookmark(bookSlug, hadithNumber);
+      toast({ title: 'পছন্দের তালিকায় যোগ করা হয়েছে' });
+    }
+    setIsFavorited(!isFavorited);
+  };
+
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    const shareTitle = `হাদিসঃ ${currentBook?.name} - ${hadithNumber}`;
+    const shareText = hadith?.bn.substring(0, 100) + '...';
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      toast({
+        title: 'লিঙ্ক কপি হয়েছে',
+        description: 'হাদিসের লিঙ্ক আপনার ক্লিপবোর্ডে কপি করা হয়েছে।',
+      });
     }
   };
 
@@ -124,7 +164,7 @@ export const HadithReader = ({ initialBook, initialHadithNumber }: HadithReaderP
             <div className="flex items-center justify-between">
               <Button
                 variant="outline"
-                onClick={handlePrevHadith}
+                onClick={() => navigateHadith(-1)}
                 disabled={hadithNumber <= 1}
                 className="transition-smooth"
               >
@@ -144,7 +184,7 @@ export const HadithReader = ({ initialBook, initialHadithNumber }: HadithReaderP
 
               <Button
                 variant="outline"
-                onClick={handleNextHadith}
+                onClick={() => navigateHadith(1)}
                 disabled={!currentBook || hadithNumber >= currentBook.totalHadith}
                 className="transition-smooth"
               >
@@ -167,12 +207,24 @@ export const HadithReader = ({ initialBook, initialHadithNumber }: HadithReaderP
       ) : hadith ? (
         <Card className="shadow-elegant">
           <CardHeader>
-            <CardTitle className="font-bengali text-gradient-primary">
-              {currentBook?.name} - হাদিস নং {hadith.hadith_id}
-            </CardTitle>
-            <p className="font-bengali text-sm text-muted-foreground">
-              অধ্যায়: {hadith.chapter_title}
-            </p>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <CardTitle className="font-bengali text-gradient-primary mb-1">
+                  {currentBook?.name} - হাদিস নং {hadith.hadith_id}
+                </CardTitle>
+                <p className="font-bengali text-sm text-muted-foreground">
+                  অধ্যায়: {hadith.chapter_title}
+                </p>
+              </div>
+              <div className="flex items-center">
+                <Button variant="ghost" size="icon" onClick={toggleFavorite}>
+                  <Star className={cn("h-6 w-6", isFavorited ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground")} />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={handleShare} className="ml-2">
+                  <Share2 className="h-6 w-6 text-muted-foreground" />
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="bg-muted p-4 rounded-lg">

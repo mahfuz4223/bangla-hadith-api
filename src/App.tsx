@@ -6,6 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import { HomePage } from "./components/HomePage";
+import { ApiDocumentation } from "./components/ApiDocumentation";
+import { AboutPage } from "./components/AboutPage";
+import { HadithReader } from "./components/HadithReader";
+import { FavoritesPage } from "./components/FavoritesPage";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +22,14 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Index />}>
+              <Route index element={<HomePage />} />
+              <Route path="api" element={<ApiDocumentation />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="read" element={<HadithReader />} />
+              <Route path="read/:bookSlug/:hadithNumber" element={<HadithReader />} />
+              <Route path="favorites" element={<FavoritesPage />} />
+            </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

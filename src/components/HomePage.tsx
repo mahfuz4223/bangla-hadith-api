@@ -4,13 +4,15 @@ import { Badge } from '@/components/ui/badge';
 import { BookOpen, Code, Database, Star, Users, Globe } from 'lucide-react';
 import heroBanner from '@/assets/hero-banner.jpg';
 import { SearchComponent } from './SearchComponent';
+import { useNavigate, Link } from 'react-router-dom';
 
-interface HomePageProps {
-  onViewChange: (view: 'reader' | 'api' | 'about') => void;
-  onSearch: (bookSlug: string, hadithNumber: number) => void;
-}
+export const HomePage = () => {
+  const navigate = useNavigate();
 
-export const HomePage = ({ onViewChange, onSearch }: HomePageProps) => {
+  const handleSearch = (bookSlug: string, hadithNumber: number) => {
+    navigate(`/read/${bookSlug}/${hadithNumber}`);
+  };
+
   const features = [
     {
       icon: BookOpen,
@@ -74,25 +76,26 @@ export const HomePage = ({ onViewChange, onSearch }: HomePageProps) => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                variant="secondary"
-                onClick={() => onViewChange('reader')}
-                className="bg-white text-primary hover:bg-white/90 font-bengali text-lg px-8 py-6"
-              >
-                <BookOpen className="h-5 w-5 mr-2" />
-                হাদিস পড়া শুরু করুন
-              </Button>
-              
-              <Button 
-                size="lg" 
-                variant="outline"
-                onClick={() => onViewChange('api')}
-                className="border-white/30 text-white hover:bg-white/10 font-bengali text-lg px-8 py-6"
-              >
-                <Code className="h-5 w-5 mr-2" />
-                API ডকুমেন্টেশন
-              </Button>
+              <Link to="/read">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="bg-white text-primary hover:bg-white/90 font-bengali text-lg px-8 py-6"
+                >
+                  <BookOpen className="h-5 w-5 mr-2" />
+                  হাদিস পড়া শুরু করুন
+                </Button>
+              </Link>
+              <Link to="/api">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/30 text-white hover:bg-white/10 font-bengali text-lg px-8 py-6"
+                >
+                  <Code className="h-5 w-5 mr-2" />
+                  API ডকুমেন্টেশন
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -101,7 +104,7 @@ export const HomePage = ({ onViewChange, onSearch }: HomePageProps) => {
       {/* Search Section */}
       <section className="py-10 bg-background -mt-16 relative z-10">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SearchComponent onSearch={onSearch} />
+          <SearchComponent onSearch={handleSearch} />
         </div>
       </section>
 
