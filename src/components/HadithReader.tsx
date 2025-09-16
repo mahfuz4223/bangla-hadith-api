@@ -75,8 +75,11 @@ export const HadithReader = () => {
       setSelectedBook(bookSlug);
       setHadithNumber(num);
       fetchHadith(bookSlug, num);
+    } else if (!bookSlug) {
+      // If no book is selected in the URL, default to Bukhari
+      navigate('/read/Bukhari/1', { replace: true });
     }
-  }, [bookSlug, hadithNumberStr, toast]);
+  }, [bookSlug, hadithNumberStr, toast, navigate]);
 
   const handleBookSelect = (slug: string) => {
     setSelectedBook(slug);
@@ -139,7 +142,7 @@ export const HadithReader = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={selectedBook} onValueChange={setSelectedBook}>
+          <Select value={selectedBook} onValueChange={handleBookSelect}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="একটি হাদিস গ্রন্থ নির্বাচন করুন..." />
             </SelectTrigger>
