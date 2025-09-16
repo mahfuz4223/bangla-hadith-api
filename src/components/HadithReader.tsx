@@ -21,6 +21,11 @@ interface HadithBook {
   totalHadith: number;
 }
 
+interface HadithReaderProps {
+  initialBook?: string;
+  initialHadithNumber?: number;
+}
+
 const hadithBooks: HadithBook[] = [
   { name: 'সহীহ বুখারী', nameAr: 'صحيح البخاري', slug: 'Bukhari', totalHadith: 7563 },
   { name: 'সহীহ মুসলিম', nameAr: 'صحيح مسلم', slug: 'Muslim', totalHadith: 7563 },
@@ -30,9 +35,9 @@ const hadithBooks: HadithBook[] = [
   { name: 'সুনান আত-তিরমিযী', nameAr: 'سنن الترمذي', slug: 'At-tirmizi', totalHadith: 3956 },
 ];
 
-export const HadithReader = () => {
-  const [selectedBook, setSelectedBook] = useState<string>('');
-  const [hadithNumber, setHadithNumber] = useState<number>(1);
+export const HadithReader = ({ initialBook, initialHadithNumber }: HadithReaderProps) => {
+  const [selectedBook, setSelectedBook] = useState<string>(initialBook || '');
+  const [hadithNumber, setHadithNumber] = useState<number>(initialHadithNumber || 1);
   const [hadith, setHadith] = useState<Hadith | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -40,7 +45,7 @@ export const HadithReader = () => {
   const currentBook = hadithBooks.find(book => book.slug === selectedBook);
 
   const fetchHadith = async (bookSlug: string, hadithId: number) => {
-    if (!bookSlug) return;
+    if (!bookSlug || !hadithId) return;
     
     setLoading(true);
     try {
