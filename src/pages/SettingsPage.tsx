@@ -107,14 +107,6 @@ export const SettingsPage = () => {
             </div>
           </div>
 
-          {/* Auto Read */}
-          <div className="flex items-center justify-between">
-            <Label className="font-bengali text-sm font-medium">স্বয়ংক্রিয় পড়া</Label>
-            <Switch
-              checked={settings.autoRead}
-              onCheckedChange={(checked) => updateSettings({ autoRead: checked })}
-            />
-          </div>
         </CardContent>
       </Card>
 
