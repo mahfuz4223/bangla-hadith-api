@@ -43,6 +43,7 @@ export const SettingsPage = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="Noto Sans Bengali">Noto Sans Bengali</SelectItem>
                   <SelectItem value="Hind Siliguri">Hind Siliguri</SelectItem>
                   <SelectItem value="Baloo Da 2">Baloo Da 2</SelectItem>
                 </SelectContent>
@@ -79,6 +80,29 @@ export const SettingsPage = () => {
               checked={settings.arabicText}
               onCheckedChange={(checked) => updateSettings({ arabicText: checked })}
             />
+          </div>
+
+          {/* Arabic Font Family */}
+          <div className="flex items-center justify-between">
+            <Label className="font-bengali text-sm font-medium">আরবি ফন্ট</Label>
+            <div className="w-40">
+              <Select
+                value={settings.arabicFontFamily}
+                onValueChange={(value: string) =>
+                  updateSettings({ arabicFontFamily: value })
+                }
+                disabled={!settings.arabicText}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Amiri">Amiri</SelectItem>
+                  <SelectItem value="Lateef">Lateef</SelectItem>
+                  <SelectItem value="Scheherazade New">Scheherazade New</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Auto Read */}
