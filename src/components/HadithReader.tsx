@@ -3,10 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Volume2, VolumeX, Type, Copy } from 'lucide-react';
+import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Type, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSettings } from '@/hooks/useSettings';
-import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { isBookmarked, addBookmark, removeBookmark } from '@/lib/bookmarks';
 import { cn, parseHadithSource } from '@/lib/utils';
 
@@ -40,7 +39,6 @@ export const HadithReader = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { settings } = useSettings();
-  const { speak, stop, isPlaying, isSupported } = useTextToSpeech();
 
   const [selectedBook, setSelectedBook] = useState<string>(bookSlug || '');
   const [hadithNumber, setHadithNumber] = useState<number>(parseInt(hadithNumberStr || '1', 10));
@@ -51,7 +49,9 @@ export const HadithReader = () => {
   const currentBook = hadithBooks.find(book => book.slug === selectedBook);
 
   const parsedHadith = useMemo(() => {
-    if (!hadith) return { cleanText: '', sources: [] };
+    if (!hadith || typeof hadith.bn !== 'string') {
+      return { cleanText: hadith?.bn || '', sources: [] };
+    }
     return parseHadithSource(hadith.bn);
   }, [hadith]);
 
@@ -89,12 +89,6 @@ export const HadithReader = () => {
       navigate('/read/Bukhari/1', { replace: true });
     }
   }, [bookSlug, hadithNumberStr, toast, navigate]);
-
-  useEffect(() => {
-    if (parsedHadith.cleanText && settings.autoRead && isSupported) {
-      speak(parsedHadith.cleanText, 'bn-BD');
-    }
-  }, [parsedHadith, settings.autoRead, isSupported, speak]);
 
   const handleBookSelect = (slug: string) => {
     setSelectedBook(slug);
@@ -170,16 +164,6 @@ export const HadithReader = () => {
       title: 'হাদিস কপি হয়েছে',
       description: 'হাদিসের সম্পূর্ণ টেক্সট আপনার ক্লিপবোর্ডে কপি করা হয়েছে।',
     });
-  };
-
-  const handleTextToSpeech = () => {
-    if (!parsedHadith.cleanText) return;
-    
-    if (isPlaying) {
-      stop();
-    } else {
-      speak(parsedHadith.cleanText, 'bn-BD');
-    }
   };
 
   const getFontSizeClass = () => {
@@ -282,16 +266,6 @@ export const HadithReader = () => {
                 <Button variant="ghost" size="icon" onClick={toggleFavorite}>
                   <Star className={cn("h-6 w-6", isFavorited ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground")} />
                 </Button>
-                
-                {isSupported && (
-                  <Button variant="ghost" size="icon" onClick={handleTextToSpeech} className="ml-2">
-                    {isPlaying ? (
-                      <VolumeX className="h-6 w-6 text-muted-foreground" />
-                    ) : (
-                      <Volume2 className="h-6 w-6 text-muted-foreground" />
-                    )}
-                  </Button>
-                )}
                 
                 <Button variant="ghost" size="icon" onClick={handleCopy} className="ml-2">
                   <Copy className="h-6 w-6 text-muted-foreground" />
