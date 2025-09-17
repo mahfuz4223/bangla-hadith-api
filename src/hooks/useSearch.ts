@@ -78,14 +78,14 @@ export const useSearch = () => {
   }, []);
 
   const search = useCallback(
-    (query: string): SearchResult[] => {
+    (query: string, bookFilter?: string): SearchResult[] => {
       if (!index || !query) {
         return [];
       }
       // FlexSearch returns results for each field. We need to flatten and deduplicate.
       const results = index.search(query, { enrich: true });
       const uniqueIds = new Set<string>();
-      const uniqueResults: SearchResult[] = [];
+      let uniqueResults: SearchResult[] = [];
 
       results.forEach(resultSet => {
         resultSet.result.forEach((doc: SearchResult) => {
@@ -95,6 +95,10 @@ export const useSearch = () => {
           }
         });
       });
+
+      if (bookFilter && bookFilter !== 'all') {
+        uniqueResults = uniqueResults.filter(doc => doc.doc.bookSlug === bookFilter);
+      }
 
       return uniqueResults;
     },
