@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Volume2, VolumeX, Type, Copy } from 'lucide-react';
@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useSettings } from '@/hooks/useSettings';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { isBookmarked, addBookmark, removeBookmark } from '@/lib/bookmarks';
-import { cn } from '@/lib/utils';
+import { cn, parseHadithSource } from '@/lib/utils';
 
 interface Hadith {
   hadith_id: number;
@@ -49,6 +49,11 @@ export const HadithReader = () => {
   const [isFavorited, setIsFavorited] = useState(false);
 
   const currentBook = hadithBooks.find(book => book.slug === selectedBook);
+
+  const parsedHadith = useMemo(() => {
+    if (!hadith) return { cleanText: '', sources: [] };
+    return parseHadithSource(hadith.bn);
+  }, [hadith]);
 
   useEffect(() => {
     const fetchHadith = async (slug: string, id: number) => {
@@ -308,10 +313,26 @@ export const HadithReader = () => {
             
             <div className="prose prose-lg max-w-none">
               <p className={cn("font-bengali text-foreground leading-relaxed", getFontSizeClass())}>
-                {hadith.bn}
+                {parsedHadith.cleanText}
               </p>
             </div>
           </CardContent>
+          {parsedHadith.sources.length > 0 && (
+            <CardFooter className="flex-col items-start gap-4 border-t pt-6">
+              <h4 className="font-bengali font-semibold text-sm text-muted-foreground">সোর্স ও রেফারেন্স</h4>
+              <div className="flex flex-wrap gap-2">
+                {parsedHadith.sources.map((source, index) => {
+                  const cleanedSource = source.replace(/[()]/g, '');
+                  const references = cleanedSource.split(/;|,/g).map(ref => ref.trim()).filter(Boolean);
+                  return references.map((ref, refIndex) => (
+                    <Badge key={`${index}-${refIndex}`} variant="secondary" className="font-bengali">
+                      {ref}
+                    </Badge>
+                  ));
+                })}
+              </div>
+            </CardFooter>
+          )}
         </Card>
       ) : selectedBook ? (
         <Card className="shadow-elegant">
