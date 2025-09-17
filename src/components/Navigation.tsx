@@ -1,21 +1,17 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, BookOpen, Code, Home, Users, Star, Search, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
 import { QuickActionsDialog } from '@/components/QuickActionsDialog';
+import { GlobalSearchCommand } from './GlobalSearchCommand';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [openSearch, setOpenSearch] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
 
   const menuItems = [
     { path: '/', label: 'হোম', icon: Home },
@@ -26,13 +22,16 @@ export const Navigation = () => {
     { path: '/settings', label: 'সেটিংস', icon: Settings },
   ];
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setIsOpen(false);
-    }
-  };
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpenSearch((open) => !open);
+      }
+    };
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, []);
 
   const NavLink = ({ path, children, className }: { path: string, children: React.ReactNode, className?: string }) => {
     const isActive = location.pathname === path;
@@ -66,19 +65,19 @@ export const Navigation = () => {
 
           {/* Desktop Navigation & Search */}
           <div className="hidden md:flex flex-1 items-center justify-center px-8">
-            <form onSubmit={handleSearchSubmit} className="w-full max-w-sm">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="হাদিস অনুসন্ধান করুন..."
-                  className="w-full pl-10 font-bengali"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </form>
+            <Button
+              variant="outline"
+              className="w-full max-w-sm justify-between text-muted-foreground font-bengali"
+              onClick={() => setOpenSearch(true)}
+            >
+              <span>হাদিস অনুসন্ধান করুন...</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </Button>
           </div>
+
+          <GlobalSearchCommand open={openSearch} setOpen={setOpenSearch} />
 
           <div className="hidden md:flex items-center space-x-1">
             {menuItems.map((item) => {
@@ -115,18 +114,19 @@ export const Navigation = () => {
                     </p>
                   </div>
 
-                  <form onSubmit={handleSearchSubmit} className="p-4">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type="search"
-                        placeholder="অনুসন্ধান করুন..."
-                        className="w-full pl-10 font-bengali"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
-                  </form>
+                  <div className="p-4">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start font-bengali text-lg py-6"
+                      onClick={() => {
+                        setIsOpen(false);
+                        setOpenSearch(true);
+                      }}
+                    >
+                      <Search className="h-5 w-5 mr-3" />
+                      অনুসন্ধান করুন
+                    </Button>
+                  </div>
                   
                   {menuItems.map((item) => {
                     const Icon = item.icon;
