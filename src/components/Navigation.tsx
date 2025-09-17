@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, BookOpen, Code, Home, Moon, Sun, Users, Star, Search } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu, BookOpen, Code, Home, Moon, Sun, Users, Star, Search, Settings } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -20,6 +24,7 @@ export const Navigation = () => {
     { path: '/favorites', label: 'পছন্দের তালিকা', icon: Star },
     { path: '/api', label: 'API', icon: Code },
     { path: '/about', label: 'সম্পর্কে', icon: Users },
+    { path: '/settings', label: 'সেটিংস', icon: Settings },
   ];
 
   const handleSearchSubmit = (e: React.FormEvent) => {

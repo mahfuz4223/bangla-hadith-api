@@ -118,6 +118,7 @@
 
   body {
     @apply bg-background text-foreground font-bengali;
+    font-size: calc(16px * var(--font-size-multiplier, 1));
     line-height: 1.7;
   }
 

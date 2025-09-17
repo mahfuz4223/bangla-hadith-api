@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useSettings } from '@/contexts/SettingsContext';
 import { isBookmarked, addBookmark, removeBookmark } from '@/lib/bookmarks';
 import { cn } from '@/lib/utils';
 
@@ -43,6 +44,7 @@ export const HadithReader = () => {
   const [hadith, setHadith] = useState<Hadith | null>(null);
   const [loading, setLoading] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const { showArabic } = useSettings();
 
   const currentBook = hadithBooks.find(book => book.slug === selectedBook);
 
@@ -235,7 +237,12 @@ export const HadithReader = () => {
               <p className="font-bengali font-medium">{hadith.narrator}</p>
             </div>
             
-            <div className="prose prose-lg max-w-none">
+            <div className="prose prose-lg max-w-none space-y-4">
+              {showArabic && hadith.ar && (
+                <p className="font-arabic text-2xl text-right leading-loose">
+                  {hadith.ar}
+                </p>
+              )}
               <p className="font-bengali text-foreground leading-relaxed">
                 {hadith.bn}
               </p>
