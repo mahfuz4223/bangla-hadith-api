@@ -79,20 +79,17 @@ export const HadithReader = () => {
       setSelectedBook(bookSlug);
       setHadithNumber(num);
       fetchHadith(bookSlug, num);
-      
-      // Auto-read if enabled
-      if (settings.autoRead && isSupported) {
-        setTimeout(() => {
-          fetchHadith(bookSlug, num).then(() => {
-            // Auto-speak after hadith loads
-          });
-        }, 1000);
-      }
     } else if (!bookSlug) {
       // If no book is selected in the URL, default to Bukhari
       navigate('/read/Bukhari/1', { replace: true });
     }
-  }, [bookSlug, hadithNumberStr, toast, navigate, settings.autoRead, isSupported]);
+  }, [bookSlug, hadithNumberStr, toast, navigate]);
+
+  useEffect(() => {
+    if (hadith && settings.autoRead && isSupported) {
+      speak(hadith.bn, 'bn-BD');
+    }
+  }, [hadith, settings.autoRead, isSupported, speak]);
 
   const handleBookSelect = (slug: string) => {
     setSelectedBook(slug);
