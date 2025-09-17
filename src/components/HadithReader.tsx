@@ -91,10 +91,10 @@ export const HadithReader = () => {
   }, [bookSlug, hadithNumberStr, toast, navigate]);
 
   useEffect(() => {
-    if (hadith && settings.autoRead && isSupported) {
-      speak(hadith.bn, 'bn-BD');
+    if (parsedHadith.cleanText && settings.autoRead && isSupported) {
+      speak(parsedHadith.cleanText, 'bn-BD');
     }
-  }, [hadith, settings.autoRead, isSupported, speak]);
+  }, [parsedHadith, settings.autoRead, isSupported, speak]);
 
   const handleBookSelect = (slug: string) => {
     setSelectedBook(slug);
@@ -125,7 +125,7 @@ export const HadithReader = () => {
   const handleShare = async () => {
     const shareUrl = window.location.href;
     const shareTitle = `হাদিসঃ ${currentBook?.name} - ${hadithNumber}`;
-    const shareText = hadith?.bn.substring(0, 100) + '...';
+    const shareText = parsedHadith.cleanText.substring(0, 100) + '...';
 
     if (navigator.share) {
       try {
@@ -157,7 +157,12 @@ export const HadithReader = () => {
       textToCopy += `${hadith.ar}\n\n`;
     }
 
-    textToCopy += `${hadith.bn}\n\n`;
+    textToCopy += `${parsedHadith.cleanText}\n\n`;
+
+    if (parsedHadith.sources.length > 0) {
+      textToCopy += `সোর্সঃ ${parsedHadith.sources.join(' ')}\n\n`;
+    }
+
     textToCopy += `লিঙ্কঃ ${window.location.href}`;
 
     navigator.clipboard.writeText(textToCopy);
@@ -168,12 +173,12 @@ export const HadithReader = () => {
   };
 
   const handleTextToSpeech = () => {
-    if (!hadith) return;
+    if (!parsedHadith.cleanText) return;
     
     if (isPlaying) {
       stop();
     } else {
-      speak(hadith.bn, 'bn-BD');
+      speak(parsedHadith.cleanText, 'bn-BD');
     }
   };
 
