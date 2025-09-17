@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useSearch, SearchResult } from '@/hooks/useSearch';
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { FileText, Book } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 const bookNameMap: { [key: string]: string } = {
   Bukhari: 'সহীহ বুখারী',
@@ -52,7 +52,7 @@ export const GlobalSearchCommand = ({ open, setOpen }: { open: boolean, setOpen:
                 key={result.id}
                 value={result.id}
                 onSelect={() => {
-                  runCommand(() => navigate(`/read/${result.bookSlug}/${result.hadithId}`));
+                  runCommand(() => navigate(`/read/${result.doc.bookSlug}/${result.doc.hadithId}`));
                 }}
                 className="cursor-pointer"
               >
@@ -60,10 +60,10 @@ export const GlobalSearchCommand = ({ open, setOpen }: { open: boolean, setOpen:
                   <FileText className="h-5 w-5 text-muted-foreground mt-1" />
                   <div className="flex flex-col">
                     <p className="font-bengali font-medium">
-                      {bookNameMap[result.bookSlug] || result.bookSlug} - হাদিস নং {result.hadithId}
+                      {bookNameMap[result.doc.bookSlug] || result.doc.bookSlug} - হাদিস নং {result.doc.hadithId}
                     </p>
                     <p className="text-xs text-muted-foreground font-bengali truncate">
-                      {result.bn_short}...
+                      {result.doc.bn_short}...
                     </p>
                   </div>
                 </div>

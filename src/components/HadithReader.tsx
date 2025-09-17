@@ -1,13 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Type, Copy } from 'lucide-react';
+import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Volume2, VolumeX, Type } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSettings } from '@/hooks/useSettings';
+import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { isBookmarked, addBookmark, removeBookmark } from '@/lib/bookmarks';
-import { cn, parseHadithSource } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface Hadith {
   hadith_id: number;
@@ -39,6 +40,7 @@ export const HadithReader = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { settings } = useSettings();
+  const { speak, stop, isPlaying, isSupported } = useTextToSpeech();
 
   const [selectedBook, setSelectedBook] = useState<string>(bookSlug || '');
   const [hadithNumber, setHadithNumber] = useState<number>(parseInt(hadithNumberStr || '1', 10));
@@ -47,13 +49,6 @@ export const HadithReader = () => {
   const [isFavorited, setIsFavorited] = useState(false);
 
   const currentBook = hadithBooks.find(book => book.slug === selectedBook);
-
-  const parsedHadith = useMemo(() => {
-    if (!hadith || typeof hadith.bn !== 'string') {
-      return { cleanText: hadith?.bn || '', sources: [] };
-    }
-    return parseHadithSource(hadith.bn);
-  }, [hadith]);
 
   useEffect(() => {
     const fetchHadith = async (slug: string, id: number) => {
@@ -84,11 +79,20 @@ export const HadithReader = () => {
       setSelectedBook(bookSlug);
       setHadithNumber(num);
       fetchHadith(bookSlug, num);
+
+      // Auto-read if enabled
+      if (settings.autoRead && isSupported) {
+        setTimeout(() => {
+          fetchHadith(bookSlug, num).then(() => {
+            // Auto-speak after hadith loads
+          });
+        }, 1000);
+      }
     } else if (!bookSlug) {
       // If no book is selected in the URL, default to Bukhari
       navigate('/read/Bukhari/1', { replace: true });
     }
-  }, [bookSlug, hadithNumberStr, toast, navigate]);
+  }, [bookSlug, hadithNumberStr, toast, navigate, settings.autoRead, isSupported]);
 
   const handleBookSelect = (slug: string) => {
     setSelectedBook(slug);
@@ -119,7 +123,7 @@ export const HadithReader = () => {
   const handleShare = async () => {
     const shareUrl = window.location.href;
     const shareTitle = `হাদিসঃ ${currentBook?.name} - ${hadithNumber}`;
-    const shareText = parsedHadith.cleanText.substring(0, 100) + '...';
+    const shareText = hadith?.bn.substring(0, 100) + '...';
 
     if (navigator.share) {
       try {
@@ -140,30 +144,14 @@ export const HadithReader = () => {
     }
   };
 
-  const handleCopy = () => {
-    if (!hadith || !currentBook) return;
+  const handleTextToSpeech = () => {
+    if (!hadith) return;
 
-    let textToCopy = `হাদিসঃ ${currentBook.name} - ${hadith.hadith_id}\n`;
-    textToCopy += `অধ্যায়: ${hadith.chapter_title}\n`;
-    textToCopy += `বর্ণনাকারী: ${hadith.narrator}\n\n`;
-
-    if (settings.arabicText && hadith.ar) {
-      textToCopy += `${hadith.ar}\n\n`;
+    if (isPlaying) {
+      stop();
+    } else {
+      speak(hadith.bn, 'bn-BD');
     }
-
-    textToCopy += `${parsedHadith.cleanText}\n\n`;
-
-    if (parsedHadith.sources.length > 0) {
-      textToCopy += `সোর্সঃ ${parsedHadith.sources.join(' ')}\n\n`;
-    }
-
-    textToCopy += `লিঙ্কঃ ${window.location.href}`;
-
-    navigator.clipboard.writeText(textToCopy);
-    toast({
-      title: 'হাদিস কপি হয়েছে',
-      description: 'হাদিসের সম্পূর্ণ টেক্সট আপনার ক্লিপবোর্ডে কপি করা হয়েছে।',
-    });
   };
 
   const getFontSizeClass = () => {
@@ -267,9 +255,16 @@ export const HadithReader = () => {
                   <Star className={cn("h-6 w-6", isFavorited ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground")} />
                 </Button>
                 
-                <Button variant="ghost" size="icon" onClick={handleCopy} className="ml-2">
-                  <Copy className="h-6 w-6 text-muted-foreground" />
-                </Button>
+                {isSupported && (
+                  <Button variant="ghost" size="icon" onClick={handleTextToSpeech} className="ml-2">
+                    {isPlaying ? (
+                      <VolumeX className="h-6 w-6 text-muted-foreground" />
+                    ) : (
+                      <Volume2 className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </Button>
+                )}
+
                 <Button variant="ghost" size="icon" onClick={handleShare} className="ml-2">
                   <Share2 className="h-6 w-6 text-muted-foreground" />
                 </Button>
@@ -292,20 +287,10 @@ export const HadithReader = () => {
             
             <div className="prose prose-lg max-w-none">
               <p className={cn("font-bengali text-foreground leading-relaxed", getFontSizeClass())}>
-                {parsedHadith.cleanText}
+                {hadith.bn}
               </p>
             </div>
           </CardContent>
-          {parsedHadith.sources.length > 0 && (
-            <CardFooter className="flex-col items-start gap-4 border-t pt-6">
-              <h4 className="font-bengali font-semibold text-sm text-muted-foreground">সোর্স ও রেফারেন্স</h4>
-              <div className="text-sm text-muted-foreground font-bengali bg-muted/50 p-3 rounded-md">
-                {parsedHadith.sources.map((source, index) => (
-                  <p key={index}>{source}</p>
-                ))}
-              </div>
-            </CardFooter>
-          )}
         </Card>
       ) : selectedBook ? (
         <Card className="shadow-elegant">
