@@ -10,7 +10,6 @@ import { GlobalSearchCommand } from './GlobalSearchCommand';
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
-  const { theme, setTheme } = useTheme();
   const location = useLocation();
 
   const menuItems = [
@@ -91,6 +90,7 @@ export const Navigation = () => {
             
             {/* Quick Actions */}
             <QuickActionsDialog />
+
           </div>
 
           {/* Mobile Navigation */}
@@ -118,6 +118,20 @@ export const Navigation = () => {
                     <p className="text-sm text-muted-foreground font-bengali">
                       ৬টি প্রধান হাদিস গ্রন্থ
                     </p>
+                  </div>
+
+                  <div className="p-4">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start font-bengali text-lg py-6"
+                      onClick={() => {
+                        setIsOpen(false);
+                        setOpenSearch(true);
+                      }}
+                    >
+                      <Search className="h-5 w-5 mr-3" />
+                      অনুসন্ধান করুন
+                    </Button>
                   </div>
                   
                   {menuItems.map((item) => {
