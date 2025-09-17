@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Volume2, VolumeX, Type } from 'lucide-react';
+import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Volume2, VolumeX, Type, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSettings } from '@/hooks/useSettings';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
@@ -141,6 +141,27 @@ export const HadithReader = () => {
     }
   };
 
+  const handleCopy = () => {
+    if (!hadith || !currentBook) return;
+
+    let textToCopy = `হাদিসঃ ${currentBook.name} - ${hadith.hadith_id}\n`;
+    textToCopy += `অধ্যায়: ${hadith.chapter_title}\n`;
+    textToCopy += `বর্ণনাকারী: ${hadith.narrator}\n\n`;
+
+    if (settings.arabicText && hadith.ar) {
+      textToCopy += `${hadith.ar}\n\n`;
+    }
+
+    textToCopy += `${hadith.bn}\n\n`;
+    textToCopy += `লিঙ্কঃ ${window.location.href}`;
+
+    navigator.clipboard.writeText(textToCopy);
+    toast({
+      title: 'হাদিস কপি হয়েছে',
+      description: 'হাদিসের সম্পূর্ণ টেক্সট আপনার ক্লিপবোর্ডে কপি করা হয়েছে।',
+    });
+  };
+
   const handleTextToSpeech = () => {
     if (!hadith) return;
     
@@ -262,6 +283,9 @@ export const HadithReader = () => {
                   </Button>
                 )}
                 
+                <Button variant="ghost" size="icon" onClick={handleCopy} className="ml-2">
+                  <Copy className="h-6 w-6 text-muted-foreground" />
+                </Button>
                 <Button variant="ghost" size="icon" onClick={handleShare} className="ml-2">
                   <Share2 className="h-6 w-6 text-muted-foreground" />
                 </Button>
