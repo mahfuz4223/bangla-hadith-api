@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 export interface AppSettings {
   fontSize: 'small' | 'medium' | 'large';
   fontFamily: string;
+  arabicFontFamily: string;
   arabicText: boolean;
   darkMode: boolean;
   autoRead: boolean;
@@ -10,7 +11,8 @@ export interface AppSettings {
 
 const DEFAULT_SETTINGS: AppSettings = {
   fontSize: 'medium',
-  fontFamily: 'Hind Siliguri',
+  fontFamily: 'Noto Sans Bengali',
+  arabicFontFamily: 'Amiri',
   arabicText: false,
   darkMode: false,
   autoRead: false,

@@ -23,8 +23,9 @@ const FontManager = () => {
   const { settings } = useSettings();
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--font-bengali', `'${settings.fontFamily}', system-ui, sans-serif`);
-  }, [settings.fontFamily]);
+    document.documentElement.style.setProperty('--font-bengali', `'${settings.fontFamily}'`);
+    document.documentElement.style.setProperty('--font-arabic', `'${settings.arabicFontFamily}', serif`);
+  }, [settings.fontFamily, settings.arabicFontFamily]);
 
   return null;
 };
