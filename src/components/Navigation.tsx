@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, BookOpen, Code, Home, Users, Star, Search, Settings } from 'lucide-react';
+import { Menu, BookOpen, Code, Home, Users, Star, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { QuickActionsDialog } from '@/components/QuickActionsDialog';
 import { GlobalSearchCommand } from './GlobalSearchCommand';
@@ -10,8 +10,8 @@ import { GlobalSearchCommand } from './GlobalSearchCommand';
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
+  const { theme, setTheme } = useTheme();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const menuItems = [
     { path: '/', label: 'হোম', icon: Home },
@@ -19,7 +19,6 @@ export const Navigation = () => {
     { path: '/favorites', label: 'পছন্দের তালিকা', icon: Star },
     { path: '/api', label: 'API', icon: Code },
     { path: '/about', label: 'সম্পর্কে', icon: Users },
-    { path: '/settings', label: 'সেটিংস', icon: Settings },
   ];
 
   useEffect(() => {
@@ -96,6 +95,13 @@ export const Navigation = () => {
 
           {/* Mobile Navigation */}
           <div className="md:hidden flex items-center space-x-2">
+             <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setOpenSearch(true)}
+            >
+              <Search className="h-5 w-5" />
+            </Button>
             
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
@@ -112,20 +118,6 @@ export const Navigation = () => {
                     <p className="text-sm text-muted-foreground font-bengali">
                       ৬টি প্রধান হাদিস গ্রন্থ
                     </p>
-                  </div>
-
-                  <div className="p-4">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start font-bengali text-lg py-6"
-                      onClick={() => {
-                        setIsOpen(false);
-                        setOpenSearch(true);
-                      }}
-                    >
-                      <Search className="h-5 w-5 mr-3" />
-                      অনুসন্ধান করুন
-                    </Button>
                   </div>
                   
                   {menuItems.map((item) => {

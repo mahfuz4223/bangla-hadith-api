@@ -4,10 +4,11 @@ import FlexSearch from 'flexsearch';
 // Define the structure of the search result document
 export interface SearchResult {
   id: string;
-  bookSlug: string;
-  hadithId: number;
-  bn_short: string;
-  [key: string]: any; // Index signature for FlexSearch compatibility
+  doc: {
+    bookSlug: string;
+    hadithId: number;
+    bn_short: string;
+  };
 }
 
 export const useSearch = () => {
@@ -78,14 +79,14 @@ export const useSearch = () => {
   }, []);
 
   const search = useCallback(
-    (query: string, bookFilter?: string): SearchResult[] => {
+    (query: string): SearchResult[] => {
       if (!index || !query) {
         return [];
       }
       // FlexSearch returns results for each field. We need to flatten and deduplicate.
       const results = index.search(query, { enrich: true });
       const uniqueIds = new Set<string>();
-      let uniqueResults: SearchResult[] = [];
+      const uniqueResults: SearchResult[] = [];
 
       results.forEach(resultSet => {
         resultSet.result.forEach((doc: SearchResult) => {
@@ -95,10 +96,6 @@ export const useSearch = () => {
           }
         });
       });
-
-      if (bookFilter && bookFilter !== 'all') {
-        uniqueResults = uniqueResults.filter(doc => doc.doc.bookSlug === bookFilter);
-      }
 
       return uniqueResults;
     },

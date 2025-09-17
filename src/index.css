@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;700&family=Baloo+Da+2:wght@400;500;700&family=Hind+Siliguri:wght@400;500;700&family=Noto+Sans+Bengali:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Lateef:wght@400;700&family=Rubik:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* Islamic themed design system with elegant colors and typography */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap');
 
 @layer base {
   :root {
@@ -38,10 +38,6 @@
     --border: 155 15% 88%;
     --input: 155 15% 95%;
     --ring: 155 45% 25%;
-
-    /* Typography */
-    --font-bengali: 'Noto Sans Bengali';
-    --font-arabic: 'Amiri';
 
     /* Islamic inspired gradients */
     --gradient-primary: linear-gradient(135deg, hsl(155 45% 25%), hsl(155 55% 35%));
@@ -135,11 +131,11 @@
 
   /* Typography classes */
   .font-bengali {
-    font-family: var(--font-bengali), system-ui, sans-serif;
+    font-family: 'Noto Sans Bengali', system-ui, sans-serif;
   }
   
   .font-arabic {
-    font-family: var(--font-arabic), serif;
+    font-family: 'Amiri', serif;
   }
 
   /* Custom utility classes */
