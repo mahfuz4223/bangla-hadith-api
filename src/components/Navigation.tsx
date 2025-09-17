@@ -6,6 +6,8 @@ import { Menu, BookOpen, Code, Home, Moon, Sun, Users, Star, Search } from 'luci
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import { SettingsDialog } from '@/components/SettingsDialog';
+import { QuickActionsDialog } from '@/components/QuickActionsDialog';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -86,6 +88,12 @@ export const Navigation = () => {
                 </NavLink>
               );
             })}
+            
+            {/* Quick Actions */}
+            <QuickActionsDialog />
+            
+            {/* Settings */}
+            <SettingsDialog />
             
             {/* Theme Toggle */}
             <Button

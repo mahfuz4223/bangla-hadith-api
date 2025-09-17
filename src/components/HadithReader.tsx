@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2 } from 'lucide-react';
+import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Volume2, VolumeX, Type } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useSettings } from '@/hooks/useSettings';
+import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { isBookmarked, addBookmark, removeBookmark } from '@/lib/bookmarks';
 import { cn } from '@/lib/utils';
 
@@ -37,6 +39,8 @@ export const HadithReader = () => {
   const { bookSlug, hadithNumber: hadithNumberStr } = useParams<{ bookSlug: string; hadithNumber: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { settings } = useSettings();
+  const { speak, stop, isPlaying, isSupported } = useTextToSpeech();
 
   const [selectedBook, setSelectedBook] = useState<string>(bookSlug || '');
   const [hadithNumber, setHadithNumber] = useState<number>(parseInt(hadithNumberStr || '1', 10));
@@ -75,11 +79,20 @@ export const HadithReader = () => {
       setSelectedBook(bookSlug);
       setHadithNumber(num);
       fetchHadith(bookSlug, num);
+      
+      // Auto-read if enabled
+      if (settings.autoRead && isSupported) {
+        setTimeout(() => {
+          fetchHadith(bookSlug, num).then(() => {
+            // Auto-speak after hadith loads
+          });
+        }, 1000);
+      }
     } else if (!bookSlug) {
       // If no book is selected in the URL, default to Bukhari
       navigate('/read/Bukhari/1', { replace: true });
     }
-  }, [bookSlug, hadithNumberStr, toast, navigate]);
+  }, [bookSlug, hadithNumberStr, toast, navigate, settings.autoRead, isSupported]);
 
   const handleBookSelect = (slug: string) => {
     setSelectedBook(slug);
@@ -128,6 +141,24 @@ export const HadithReader = () => {
         title: 'লিঙ্ক কপি হয়েছে',
         description: 'হাদিসের লিঙ্ক আপনার ক্লিপবোর্ডে কপি করা হয়েছে।',
       });
+    }
+  };
+
+  const handleTextToSpeech = () => {
+    if (!hadith) return;
+    
+    if (isPlaying) {
+      stop();
+    } else {
+      speak(hadith.bn, 'bn-BD');
+    }
+  };
+
+  const getFontSizeClass = () => {
+    switch (settings.fontSize) {
+      case 'small': return 'text-sm';
+      case 'large': return 'text-lg';
+      default: return 'text-base';
     }
   };
 
@@ -223,6 +254,17 @@ export const HadithReader = () => {
                 <Button variant="ghost" size="icon" onClick={toggleFavorite}>
                   <Star className={cn("h-6 w-6", isFavorited ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground")} />
                 </Button>
+                
+                {isSupported && (
+                  <Button variant="ghost" size="icon" onClick={handleTextToSpeech} className="ml-2">
+                    {isPlaying ? (
+                      <VolumeX className="h-6 w-6 text-muted-foreground" />
+                    ) : (
+                      <Volume2 className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </Button>
+                )}
+                
                 <Button variant="ghost" size="icon" onClick={handleShare} className="ml-2">
                   <Share2 className="h-6 w-6 text-muted-foreground" />
                 </Button>
@@ -235,8 +277,16 @@ export const HadithReader = () => {
               <p className="font-bengali font-medium">{hadith.narrator}</p>
             </div>
             
+            {settings.arabicText && hadith.ar && (
+              <div className="bg-muted p-4 rounded-lg text-right">
+                <p className="font-arabic text-lg leading-relaxed" dir="rtl">
+                  {hadith.ar}
+                </p>
+              </div>
+            )}
+            
             <div className="prose prose-lg max-w-none">
-              <p className="font-bengali text-foreground leading-relaxed">
+              <p className={cn("font-bengali text-foreground leading-relaxed", getFontSizeClass())}>
                 {hadith.bn}
               </p>
             </div>

@@ -172,4 +172,17 @@
   .transition-smooth {
     transition: var(--transition-smooth);
   }
+
+  /* Print styles */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    .print-friendly {
+      background: white !important;
+      color: black !important;
+      box-shadow: none !important;
+    }
+  }
 }
