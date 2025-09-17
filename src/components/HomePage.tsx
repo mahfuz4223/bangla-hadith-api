@@ -1,13 +1,51 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Code, Database, Star, Users, Globe } from 'lucide-react';
+import { BookOpen, Code, Database, Star, Users, Globe, Quote } from 'lucide-react';
 import heroBanner from '@/assets/hero-banner.jpg';
 import { SearchComponent } from './SearchComponent';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useNavigate, Link } from 'react-router-dom';
+import { useRandomHadith } from '@/hooks/useRandomHadith';
+
+interface Hadith {
+  hadith_id: number;
+  narrator: string;
+  bn: string;
+  ar?: string;
+  chapter_id: number;
+  chapter_title: string;
+  book_slug: string;
+}
 
 export const HomePage = () => {
   const navigate = useNavigate();
+  const { getRandomHadith } = useRandomHadith();
+  const [hadithOfTheDay, setHadithOfTheDay] = useState<Hadith | null>(null);
+  const [loadingHadith, setLoadingHadith] = useState(true);
+
+  useEffect(() => {
+    const fetchHadithOfTheDay = async () => {
+      setLoadingHadith(true);
+      try {
+        const { bookSlug, hadithId } = getRandomHadith();
+        const response = await fetch(
+          `https://cdn.jsdelivr.net/gh/md-rifatkhan/hadithbangla@main/${bookSlug}/hadith/${hadithId}.json`
+        );
+        if (!response.ok) throw new Error('হাদিস লোড করতে সমস্যা হয়েছে');
+        const data = await response.json();
+        setHadithOfTheDay({ ...data.hadith, book_slug: bookSlug });
+      } catch (error) {
+        console.error("Failed to fetch Hadith of the Day:", error);
+        setHadithOfTheDay(null);
+      } finally {
+        setLoadingHadith(false);
+      }
+    };
+
+    fetchHadithOfTheDay();
+  }, [getRandomHadith]);
 
   const handleSearch = (bookSlug: string, hadithNumber: number) => {
     navigate(`/read/${bookSlug}/${hadithNumber}`);
@@ -105,6 +143,53 @@ export const HomePage = () => {
       <section className="py-10 bg-background -mt-16 relative z-10">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <SearchComponent onSearch={handleSearch} />
+        </div>
+      </section>
+
+      {/* Hadith of the Day Section */}
+      <section className="py-20 bg-muted/20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gradient-primary font-bengali mb-4">
+              দিনের হাদিস
+            </h2>
+            <p className="text-lg text-muted-foreground font-bengali">
+              প্রতিদিন একটি নতুন অনুপ্রেরণামূলক হাদিস
+            </p>
+          </div>
+          {loadingHadith ? (
+            <Card className="shadow-elegant">
+              <CardHeader>
+                <Skeleton className="h-6 w-3/4" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-8 w-32 mt-4" />
+              </CardContent>
+            </Card>
+          ) : hadithOfTheDay && (
+            <Card className="shadow-elegant border-primary/20">
+              <CardHeader className="text-center">
+                <Quote className="h-10 w-10 text-primary/50 mx-auto mb-4" />
+                <CardTitle className="font-bengali text-lg text-muted-foreground">
+                  <p className="font-medium text-primary">{hadithOfTheDay.narrator} থেকে বর্ণিত</p>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-lg text-foreground font-bengali leading-relaxed mb-6">
+                  {hadithOfTheDay.bn.length > 200 ? `${hadithOfTheDay.bn.substring(0, 200)}...` : hadithOfTheDay.bn}
+                </p>
+                <Link to={`/read/${hadithOfTheDay.book_slug}/${hadithOfTheDay.hadith_id}`}>
+                  <Button variant="outline" className="font-bengali">
+                    সম্পূর্ণ হাদিস পড়ুন
+                    <BookOpen className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </section>
 
