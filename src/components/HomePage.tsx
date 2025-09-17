@@ -33,7 +33,7 @@ export const HomePage = () => {
 
   const books = [
     { name: 'সহীহ বুখারী', nameAr: 'صحيح البخاري', hadithCount: '৭,৫৬৩' },
-    { name: 'সহীহ মুসলিম', nameAr: 'صحيح مسلم', hadithCount: '৭,৫৬ৃ' },
+    { name: 'সহীহ মুসলিম', nameAr: 'صحيح مسلم', hadithCount: '৭,৫৬৩' },
     { name: 'সুনান আবু দাউদ', nameAr: 'سنن أبي داود', hadithCount: '৫,২৭৪' },
     { name: 'সুনান ইবনে মাজাহ', nameAr: 'سنن ابن ماجه', hadithCount: '৪,৩৪১' },
     { name: 'সুনান আন-নাসাঈ', nameAr: 'سنن النسائي', hadithCount: '৫,৭৫৮' },
