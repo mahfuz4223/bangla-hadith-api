@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Type, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useSettings } from '@/hooks/useSettings';
@@ -300,16 +299,10 @@ export const HadithReader = () => {
           {parsedHadith.sources.length > 0 && (
             <CardFooter className="flex-col items-start gap-4 border-t pt-6">
               <h4 className="font-bengali font-semibold text-sm text-muted-foreground">সোর্স ও রেফারেন্স</h4>
-              <div className="flex flex-wrap gap-2">
-                {parsedHadith.sources.map((source, index) => {
-                  const cleanedSource = source.replace(/[()]/g, '');
-                  const references = cleanedSource.split(/;|,/g).map(ref => ref.trim()).filter(Boolean);
-                  return references.map((ref, refIndex) => (
-                    <Badge key={`${index}-${refIndex}`} variant="secondary" className="font-bengali">
-                      {ref}
-                    </Badge>
-                  ));
-                })}
+              <div className="text-sm text-muted-foreground font-bengali bg-muted/50 p-3 rounded-md">
+                {parsedHadith.sources.map((source, index) => (
+                  <p key={index}>{source}</p>
+                ))}
               </div>
             </CardFooter>
           )}
