@@ -17,8 +17,8 @@ export const useSearch = () => {
 
   useEffect(() => {
     const loadIndex = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const searchIndex = new (FlexSearch as any).Document({
           document: {
             id: 'id',
@@ -28,15 +28,40 @@ export const useSearch = () => {
           tokenize: 'forward',
         });
 
-        // The index is exported into multiple files. We need to fetch them all.
-        const indexParts = ['reg', 'cfg', 'map', 'ctx'];
-        for (const part of indexParts) {
-          const response = await fetch(`/search-index/${part}.json`);
-          if (!response.ok) {
-            throw new Error(`Failed to load search index part: ${part}`);
+        // Try loading pre-exported parts first
+        const loadFromExportedParts = async () => {
+          const indexParts = ['reg', 'cfg', 'map', 'ctx'];
+          for (const part of indexParts) {
+            const response = await fetch(`/search-index/${part}.json`);
+            if (!response.ok) throw new Error(`Failed to load search index part: ${part}`);
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+              throw new Error(`Invalid content-type for ${part}.json: ${contentType}`);
+            }
+            const data = await response.json();
+            searchIndex.import(part, data);
           }
-          const data = await response.json();
-          searchIndex.import(part, data);
+        };
+
+        // Fallback: build index in-browser from a compact data file
+        const loadFromDataJson = async () => {
+          const response = await fetch('/search-index/data.json');
+          if (!response.ok) throw new Error('Fallback data.json not found');
+          const contentType = response.headers.get('content-type') || '';
+          if (!contentType.includes('application/json')) {
+            throw new Error(`Invalid content-type for data.json: ${contentType}`);
+          }
+          const docs: any[] = await response.json();
+          for (const doc of docs) {
+            searchIndex.add(doc);
+          }
+        };
+
+        try {
+          await loadFromExportedParts();
+        } catch (err) {
+          console.warn('Prebuilt index not available, falling back to data.json', err);
+          await loadFromDataJson();
         }
 
         setIndex(searchIndex);
