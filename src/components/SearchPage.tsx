@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { useSearch, SearchResult } from '@/hooks/useSearch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Loader2, Search, ChevronRight } from 'lucide-react';
 
@@ -16,19 +17,33 @@ const bookNameMap: { [key: string]: string } = {
   'At-tirmizi': 'সুনান আত-তিরমিযী',
 };
 
+const hadithBooks = [
+  { name: 'সব বই', slug: 'all' },
+  { name: 'সহীহ বুখারী', slug: 'Bukhari' },
+  { name: 'সহীহ মুসলিম', slug: 'Muslim' },
+  { name: 'সুনান আবু দাউদ', slug: 'AbuDaud' },
+  { name: 'সুনান ইবনে মাজাহ', slug: 'Ibne-Mazah' },
+  { name: 'সুনান আন-নাসাঈ', slug: 'Al-Nasai' },
+  { name: 'সুনান আত-তিরমিযী', slug: 'At-tirmizi' },
+];
+
 export const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
+  const book = searchParams.get('book') || 'all';
   const [inputValue, setInputValue] = useState(query);
+  const [bookFilter, setBookFilter] = useState(book);
 
   const { search, loading: indexLoading, error: indexError } = useSearch();
   const [results, setResults] = useState<SearchResult[]>([]);
 
   useEffect(() => {
-    // Perform search when the query parameter in the URL changes
-    const searchResults = search(query);
+    // Perform search when the query or book parameters in the URL change
+    const searchResults = search(query, book);
     setResults(searchResults);
-  }, [query, search]);
+    setInputValue(query);
+    setBookFilter(book);
+  }, [query, book, search]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -36,7 +51,11 @@ export const SearchPage = () => {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchParams({ q: inputValue });
+    const params: { q: string, book?: string } = { q: inputValue };
+    if (bookFilter !== 'all') {
+      params.book = bookFilter;
+    }
+    setSearchParams(params);
   };
 
   return (
@@ -49,7 +68,21 @@ export const SearchPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearchSubmit} className="flex gap-2">
+          <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2">
+            <div className="w-full sm:w-48">
+              <Select value={bookFilter} onValueChange={setBookFilter}>
+                <SelectTrigger className="font-bengali">
+                  <SelectValue placeholder="বই নির্বাচন করুন" />
+                </SelectTrigger>
+                <SelectContent>
+                  {hadithBooks.map(b => (
+                    <SelectItem key={b.slug} value={b.slug} className="font-bengali">
+                      {b.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Input
               type="search"
               placeholder="যেকোনো হাদিস খুঁজুন..."
