@@ -5,9 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { BookOpen, Code, Database, Star, Users, Globe, Quote } from 'lucide-react';
 import heroBanner from '@/assets/hero-banner.jpg';
 import { SearchComponent } from './SearchComponent';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useNavigate, Link } from 'react-router-dom';
 import { useRandomHadith } from '@/hooks/useRandomHadith';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Hadith {
   hadith_id: number;

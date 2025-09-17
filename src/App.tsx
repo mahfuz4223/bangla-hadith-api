@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { useSettings, SettingsProvider } from "@/hooks/useSettings";
+import { useEffect } from "react";
+import { SettingsProvider, useSettings } from "@/hooks/useSettings";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { HomePage } from "./components/HomePage";
@@ -38,25 +38,25 @@ const App = () => (
           <TooltipProvider>
             <FontManager />
             <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />}>
-                <Route index element={<HomePage />} />
-                <Route path="api" element={<ApiDocumentation />} />
-                <Route path="about" element={<AboutPage />} />
-                <Route path="read" element={<HadithReader />} />
-                <Route path="read/:bookSlug/:hadithNumber" element={<HadithReader />} />
-                <Route path="favorites" element={<FavoritesPage />} />
-                <Route path="search" element={<SearchPage />} />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="api" element={<ApiDocumentation />} />
+                  <Route path="about" element={<AboutPage />} />
+                  <Route path="read" element={<HadithReader />} />
+                  <Route path="read/:bookSlug/:hadithNumber" element={<HadithReader />} />
+                  <Route path="favorites" element={<FavoritesPage />} />
+                  <Route path="search" element={<SearchPage />} />
                 <Route path="settings" element={<SettingsPage />} />
-              </Route>
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
+                </Route>
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
       </SettingsProvider>
     </QueryClientProvider>
   </ErrorBoundary>
