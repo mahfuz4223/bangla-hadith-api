@@ -46,6 +46,7 @@ export const SettingsPage = () => {
                   <SelectItem value="Noto Sans Bengali">Noto Sans Bengali</SelectItem>
                   <SelectItem value="Hind Siliguri">Hind Siliguri</SelectItem>
                   <SelectItem value="Baloo Da 2">Baloo Da 2</SelectItem>
+                  <SelectItem value="Anek Bangla">Anek Bangla</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -100,6 +101,7 @@ export const SettingsPage = () => {
                   <SelectItem value="Amiri">Amiri</SelectItem>
                   <SelectItem value="Lateef">Lateef</SelectItem>
                   <SelectItem value="Scheherazade New">Scheherazade New</SelectItem>
+                  <SelectItem value="Rubik">Rubik</SelectItem>
                 </SelectContent>
               </Select>
             </div>
