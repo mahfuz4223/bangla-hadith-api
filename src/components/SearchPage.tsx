@@ -3,7 +3,8 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { useSearch, SearchResult } from '@/hooks/useSearch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Loader2, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Loader2, Search, ChevronRight } from 'lucide-react';
 
 // A map to get book names from slugs
 const bookNameMap: { [key: string]: string } = {
@@ -56,7 +57,10 @@ export const SearchPage = () => {
               value={inputValue}
               onChange={handleInputChange}
             />
-            <Button type="submit">অনুসন্ধান</Button>
+            <Button type="submit" className="bg-gradient-primary">
+              <Search className="h-4 w-4 mr-2" />
+              অনুসন্ধান
+            </Button>
           </form>
         </CardContent>
       </Card>
@@ -83,16 +87,24 @@ export const SearchPage = () => {
             </p>
           )}
 
+          {results.length === 0 && query && (
+            <div className="text-center py-12">
+              <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground font-bengali">কোনো ফলাফল পাওয়া যায়নি</p>
+            </div>
+          )}
+
           {results.map((result) => (
             <Link to={`/read/${result.bookSlug}/${result.hadithId}`} key={result.id}>
-              <Card className="shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-lg font-bengali text-primary">
-                    {bookNameMap[result.bookSlug] || result.bookSlug} - হাদিস নং {result.hadithId}
+              <Card className="shadow-sm hover:shadow-elegant transition-all duration-300 cursor-pointer border-l-4 border-l-transparent hover:border-l-primary">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-bengali text-primary flex items-center justify-between">
+                    <span>{bookNameMap[result.bookSlug] || result.bookSlug} - হাদিস নং {result.hadithId}</span>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="font-bengali text-muted-foreground leading-relaxed">
+                  <p className="font-bengali text-muted-foreground leading-relaxed line-clamp-3">
                     {result.bn_short}...
                   </p>
                 </CardContent>

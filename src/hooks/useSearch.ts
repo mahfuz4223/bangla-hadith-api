@@ -7,10 +7,11 @@ export interface SearchResult {
   bookSlug: string;
   hadithId: number;
   bn_short: string;
+  [key: string]: any; // Index signature for FlexSearch compatibility
 }
 
 export const useSearch = () => {
-  const [index, setIndex] = useState<FlexSearch.Document<SearchResult, true> | null>(null);
+  const [index, setIndex] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +19,7 @@ export const useSearch = () => {
     const loadIndex = async () => {
       try {
         setLoading(true);
-        const searchIndex = new FlexSearch.Document<SearchResult, true>({
+        const searchIndex = new (FlexSearch as any).Document({
           document: {
             id: 'id',
             index: ['bn', 'narrator', 'chapter_title'],

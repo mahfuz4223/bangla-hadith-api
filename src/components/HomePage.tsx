@@ -178,14 +178,15 @@ export const HomePage = () => {
           </div>
 
           <div className="text-center mt-12">
-            <Button 
-              size="lg"
-              onClick={() => onViewChange('reader')}
-              className="bg-gradient-primary text-primary-foreground hover:opacity-90 font-bengali text-lg px-8 py-6"
-            >
-              <BookOpen className="h-5 w-5 mr-2" />
-              এখনই পড়া শুরু করুন
-            </Button>
+            <Link to="/read">
+              <Button 
+                size="lg"
+                className="bg-gradient-primary text-primary-foreground hover:opacity-90 font-bengali text-lg px-8 py-6"
+              >
+                <BookOpen className="h-5 w-5 mr-2" />
+                এখনই পড়া শুরু করুন
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
