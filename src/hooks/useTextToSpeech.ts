@@ -1,8 +1,17 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 export const useTextToSpeech = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSupported] = useState(() => 'speechSynthesis' in window);
+
+  useEffect(() => {
+    // Cleanup on unmount
+    return () => {
+      if (isSupported) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [isSupported]);
 
   const speak = useCallback((text: string, lang: string = 'bn-BD') => {
     if (!isSupported || !text) return;
