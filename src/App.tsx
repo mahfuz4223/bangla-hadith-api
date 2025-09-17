@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useSettings } from "@/hooks/useSettings";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { HomePage } from "./components/HomePage";
@@ -17,11 +19,22 @@ import { SettingsPage } from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
+const FontManager = () => {
+  const { settings } = useSettings();
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--font-bengali', `'${settings.fontFamily}', system-ui, sans-serif`);
+  }, [settings.fontFamily]);
+
+  return null;
+};
+
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <TooltipProvider>
+          <FontManager />
           <Toaster />
           <Sonner />
           <BrowserRouter>

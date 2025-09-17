@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export interface AppSettings {
   fontSize: 'small' | 'medium' | 'large';
+  fontFamily: string;
   arabicText: boolean;
   darkMode: boolean;
   autoRead: boolean;
@@ -9,6 +10,7 @@ export interface AppSettings {
 
 const DEFAULT_SETTINGS: AppSettings = {
   fontSize: 'medium',
+  fontFamily: 'Hind Siliguri',
   arabicText: false,
   darkMode: false,
   autoRead: false,
@@ -30,15 +32,17 @@ export const useSettings = () => {
     }
   }, []);
 
-  const updateSettings = (newSettings: Partial<AppSettings>) => {
-    const updated = { ...settings, ...newSettings };
-    setSettings(updated);
-    try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
-    } catch (error) {
-      console.error('Error saving settings:', error);
-    }
-  };
+  const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
+    setSettings(prevSettings => {
+      const updated = { ...prevSettings, ...newSettings };
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
+      } catch (error) {
+        console.error('Error saving settings:', error);
+      }
+      return updated;
+    });
+  }, []);
 
   return { settings, updateSettings };
 };

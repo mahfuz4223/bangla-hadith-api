@@ -29,6 +29,27 @@ export const SettingsPage = () => {
           <CardTitle className="font-bengali">ডিসপ্লে ও অ্যাক্সেসিবিলিটি</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6 pt-4">
+          {/* Font Family */}
+          <div className="flex items-center justify-between">
+            <Label className="font-bengali text-sm font-medium">ফন্ট</Label>
+            <div className="w-40">
+              <Select
+                value={settings.fontFamily}
+                onValueChange={(value: string) =>
+                  updateSettings({ fontFamily: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Hind Siliguri">Hind Siliguri</SelectItem>
+                  <SelectItem value="Baloo Da 2">Baloo Da 2</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Font Size */}
           <div className="flex items-center justify-between">
             <Label className="font-bengali text-sm font-medium">ফন্ট সাইজ</Label>
