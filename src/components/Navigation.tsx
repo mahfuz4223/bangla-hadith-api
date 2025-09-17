@@ -2,16 +2,13 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, BookOpen, Code, Home, Moon, Sun, Users, Star, Search } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Menu, BookOpen, Code, Home, Users, Star, Search, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { SettingsDialog } from '@/components/SettingsDialog';
 import { QuickActionsDialog } from '@/components/QuickActionsDialog';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,6 +19,7 @@ export const Navigation = () => {
     { path: '/favorites', label: 'পছন্দের তালিকা', icon: Star },
     { path: '/api', label: 'API', icon: Code },
     { path: '/about', label: 'সম্পর্কে', icon: Users },
+    { path: '/settings', label: 'সেটিংস', icon: Settings },
   ];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -91,32 +89,10 @@ export const Navigation = () => {
             
             {/* Quick Actions */}
             <QuickActionsDialog />
-            
-            {/* Settings */}
-            <SettingsDialog />
-            
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="ml-2"
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button>
           </div>
 
           {/* Mobile Navigation */}
           <div className="md:hidden flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button>
             
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
