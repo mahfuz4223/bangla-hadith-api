@@ -41,7 +41,7 @@
 
     /* Typography */
     --font-bengali: 'Noto Sans Bengali';
-    --font-arabic: 'Amiri', serif;
+    --font-arabic: 'Amiri';
 
     /* Islamic inspired gradients */
     --gradient-primary: linear-gradient(135deg, hsl(155 45% 25%), hsl(155 55% 35%));
@@ -139,7 +139,7 @@
   }
   
   .font-arabic {
-    font-family: var(--font-arabic);
+    font-family: var(--font-arabic), serif;
   }
 
   /* Custom utility classes */
