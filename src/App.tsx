@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { useSettings } from "@/hooks/useSettings";
+import { useSettings, SettingsProvider } from "@/hooks/useSettings";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { HomePage } from "./components/HomePage";
@@ -33,10 +33,11 @@ const FontManager = () => {
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <TooltipProvider>
-          <FontManager />
-          <Toaster />
+      <SettingsProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <TooltipProvider>
+            <FontManager />
+            <Toaster />
           <Sonner />
           <BrowserRouter>
             <Routes>
@@ -56,6 +57,7 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>
+      </SettingsProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );
