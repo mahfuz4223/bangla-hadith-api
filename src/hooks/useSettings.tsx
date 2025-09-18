@@ -6,6 +6,7 @@ export interface AppSettings {
   arabicFontFamily: string;
   arabicText: boolean;
   darkMode: boolean;
+  autoRead: boolean;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -14,6 +15,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   arabicFontFamily: 'Amiri',
   arabicText: false,
   darkMode: false,
+  autoRead: false,
 };
 
 const SETTINGS_KEY = 'hadith_app_settings';

@@ -1,13 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Code, Database, Star, Users, Globe } from 'lucide-react';
+import { BookOpen, Code, Database, Star, Users, Globe, Layers } from 'lucide-react';
 import heroBanner from '@/assets/hero-banner.jpg';
 import { SearchComponent } from './SearchComponent';
+import { ChapterBrowser } from './ChapterBrowser';
 import { useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react';
 
 export const HomePage = () => {
   const navigate = useNavigate();
+  const [showChapterBrowser, setShowChapterBrowser] = useState(false);
 
   const handleSearch = (bookSlug: string, hadithNumber: number) => {
     navigate(`/read/${bookSlug}/${hadithNumber}`);
@@ -86,6 +89,15 @@ export const HomePage = () => {
                   হাদিস পড়া শুরু করুন
                 </Button>
               </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10 font-bengali text-lg px-8 py-6"
+                onClick={() => setShowChapterBrowser(!showChapterBrowser)}
+              >
+                <Layers className="h-5 w-5 mr-2" />
+                অধ্যায় ব্রাউজ করুন
+              </Button>
               <Link to="/api">
                 <Button
                   size="lg"
@@ -107,6 +119,21 @@ export const HomePage = () => {
           <SearchComponent onSearch={handleSearch} />
         </div>
       </section>
+
+      {/* Chapter Browser */}
+      {showChapterBrowser && (
+        <section className="py-10 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ChapterBrowser 
+              onChapterSelect={(bookSlug, chapterId) => {
+                // Navigate to chapter or handle chapter selection
+                console.log('Selected chapter:', bookSlug, chapterId);
+                navigate(`/read/${bookSlug}/1`); // Navigate to first hadith of the book for now
+              }}
+            />
+          </div>
+        </section>
+      )}
 
       {/* Features Section */}
       <section className="py-20 bg-background">
