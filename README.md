@@ -194,7 +194,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/mahfuz4223/bangla-hadith-api/issues)
-- **Email**: mahfuz4223@example.com
 - **Discussions**: [Join community discussions](https://github.com/mahfuz4223/bangla-hadith-api/discussions)
 
 ---
