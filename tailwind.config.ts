@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const tailwindcssAnimate = require("tailwindcss-animate");
 
 export default {
   darkMode: ["class"],
@@ -14,8 +16,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        bengali: ['Noto Sans Bengali', 'system-ui', 'sans-serif'],
-        arabic: ['Amiri', 'serif'],
+        bengali: ['var(--font-bengali, "Noto Sans Bengali")', 'system-ui', 'sans-serif'],
+        arabic: ['var(--font-arabic, "Amiri")', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -92,5 +94,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

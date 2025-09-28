@@ -15,6 +15,8 @@ import { AboutPage } from "./components/AboutPage";
 import { HadithReader } from "./components/HadithReader";
 import { FavoritesPage } from "./components/FavoritesPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { SearchResults } from "./pages/SearchResults";
+import { ChaptersPage } from "./pages/ChaptersPage";
 
 const queryClient = new QueryClient();
 
@@ -38,16 +40,24 @@ const App = () => (
             <FontManager />
             <Toaster />
             <Sonner />
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+              }}
+            >
               <Routes>
                 <Route path="/" element={<Index />}>
                   <Route index element={<HomePage />} />
                   <Route path="api" element={<ApiDocumentation />} />
                   <Route path="about" element={<AboutPage />} />
                   <Route path="read" element={<HadithReader />} />
+                  <Route path="read/:bookSlug" element={<HadithReader />} />
                   <Route path="read/:bookSlug/:hadithNumber" element={<HadithReader />} />
                   <Route path="favorites" element={<FavoritesPage />} />
-                <Route path="settings" element={<SettingsPage />} />
+                  <Route path="search" element={<SearchResults />} />
+                  <Route path="chapters" element={<ChaptersPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
                 </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

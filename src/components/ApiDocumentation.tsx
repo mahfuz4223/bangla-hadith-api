@@ -91,7 +91,7 @@ export const ApiDocumentation = () => {
     const endpoint = apiInfo.endpoints[parseInt(selectedEndpoint)];
     if (!endpoint) return apiInfo.baseUrl;
     
-    let url = endpoint.example.replace('bukhari', selectedBook);
+    const url = endpoint.example.replace('bukhari', selectedBook);
     return `${apiInfo.baseUrl}${url}`;
   }, [selectedBook, selectedEndpoint]);
 

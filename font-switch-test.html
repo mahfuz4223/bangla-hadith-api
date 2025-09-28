@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Font Test - Dynamic Font Switching</title>
+    <style>
+        body { padding: 20px; font-family: Arial, sans-serif; }
+        .test-area {
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .font-bengali {
+            font-family: var(--font-bengali, 'Noto Sans Bengali'), system-ui, sans-serif;
+        }
+        .control-panel {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        select {
+            padding: 8px;
+            margin: 0 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .debug-info {
+            background: #fff3cd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Font Switching Test</h1>
+    
+    <div class="control-panel">
+        <label>Select Bengali Font:</label>
+        <select id="fontSelect">
+            <option value="Noto Sans Bengali">Noto Sans Bengali</option>
+            <option value="Anek Bangla">Anek Bangla</option>
+            <option value="Hind Siliguri">Hind Siliguri</option>
+            <option value="Baloo Da 2">Baloo Da 2</option>
+        </select>
+        <button onclick="applyFont()">Apply Font</button>
+        <button onclick="resetFont()">Reset to Default</button>
+    </div>
+
+    <div class="debug-info">
+        <strong>Current CSS Variable Value:</strong>
+        <span id="cssVarValue">--font-bengali: Not Set</span>
+    </div>
+
+    <div class="test-area font-bengali" id="testArea">
+        <h2>বাংলা ফন্ট টেস্ট</h2>
+        <p>এটি একটি বাংলা টেক্সট টেস্ট। ফন্ট পরিবর্তন করার সময় এই টেক্সটের চেহারা পরিবর্তন হওয়া উচিত।</p>
+        <p>হাদিস নম্বর: ১২৩ৄ৫৬৭৮৯০</p>
+        <p>সহীহ বুখারী - অধ্যায়: ঈমান</p>
+        <p>আবু হুরায়রা রাদিয়াল্লাহু আনহু থেকে বর্ণিত, রাসূলুল্লাহ সাল্লাল্লাহু আলাইহি ওয়াসাল্লাম বলেছেন...</p>
+    </div>
+
+    <script>
+        function updateDebugInfo() {
+            const computedStyle = getComputedStyle(document.documentElement);
+            const fontVarValue = computedStyle.getPropertyValue('--font-bengali').trim();
+            document.getElementById('cssVarValue').textContent = 
+                '--font-bengali: ' + (fontVarValue || 'Not Set');
+        }
+
+        function applyFont() {
+            const selectedFont = document.getElementById('fontSelect').value;
+            console.log('Applying font:', selectedFont);
+            
+            // Set CSS variable
+            document.documentElement.style.setProperty('--font-bengali', `'${selectedFont}'`);
+            
+            // Update debug info
+            updateDebugInfo();
+            
+            // Log for debugging
+            console.log('CSS Variable set to:', document.documentElement.style.getPropertyValue('--font-bengali'));
+        }
+
+        function resetFont() {
+            document.documentElement.style.removeProperty('--font-bengali');
+            document.getElementById('fontSelect').value = 'Noto Sans Bengali';
+            updateDebugInfo();
+        }
+
+        // Check if fonts are loaded
+        document.fonts.ready.then(function() {
+            console.log('All fonts loaded');
+            updateDebugInfo();
+            
+            // List available fonts
+            document.fonts.forEach(font => {
+                if (font.family.includes('Bangla') || font.family.includes('Bengali') || font.family.includes('Siliguri') || font.family.includes('Baloo')) {
+                    console.log(`Font loaded: ${font.family}, Status: ${font.status}`);
+                }
+            });
+        });
+
+        // Initial debug info
+        updateDebugInfo();
+    </script>
+</body>
+</html>

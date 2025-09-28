@@ -7,15 +7,20 @@ import { Loader2, BookOpen, ChevronLeft, ChevronRight, Star, Share2, Type, Copy 
 import { useToast } from '@/hooks/use-toast';
 import { useSettings } from '@/hooks/useSettings';
 import { isBookmarked, addBookmark, removeBookmark } from '@/lib/bookmarks';
-import { cn, parseHadithSource } from '@/lib/utils';
+import { cn, parseHadithSource, toBanglaNumber } from '@/lib/utils';
 
 interface Hadith {
   hadith_id: number;
   narrator: string;
   bn: string;
   ar?: string;
-  chapter_id: number;
-  chapter_title: string;
+  grade_id: number;
+  grade: string;
+  grade_color: string;
+  note?: string | null;
+  chapter?: {
+    chapter_number: string;
+  };
 }
 
 interface HadithBook {
@@ -34,17 +39,49 @@ const hadithBooks: HadithBook[] = [
   { name: 'সুনান আত-তিরমিযী', nameAr: 'سنن الترمذي', slug: 'At-tirmizi', totalHadith: 3956 },
 ];
 
+// Mapping function to convert URL slugs to API slugs
+const mapUrlSlugToApiSlug = (urlSlug: string): string => {
+  const slugMap: Record<string, string> = {
+    'bukhari': 'Bukhari',
+    'muslim': 'Muslim',
+    'abu-dawud': 'AbuDaud',
+    'abudawud': 'AbuDaud',
+    'tirmidhi': 'At-tirmizi',
+    'nasai': 'Al-Nasai',
+    'ibn-majah': 'Ibne-Mazah',
+    'ibnmajah': 'Ibne-Mazah'
+  };
+  return slugMap[urlSlug.toLowerCase()] || urlSlug;
+};
+
+// Mapping function to convert API slugs to URL slugs
+const mapApiSlugToUrlSlug = (apiSlug: string): string => {
+  const slugMap: Record<string, string> = {
+    'Bukhari': 'bukhari',
+    'Muslim': 'muslim',
+    'AbuDaud': 'abu-dawud',
+    'At-tirmizi': 'tirmidhi',
+    'Al-Nasai': 'nasai',
+    'Ibne-Mazah': 'ibn-majah'
+  };
+  return slugMap[apiSlug] || apiSlug.toLowerCase();
+};
+
 export const HadithReader = () => {
-  const { bookSlug, hadithNumber: hadithNumberStr } = useParams<{ bookSlug: string; hadithNumber: string }>();
+  const { bookSlug: urlBookSlug, hadithNumber: hadithNumberStr } = useParams<{ bookSlug: string; hadithNumber: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { settings } = useSettings();
 
+  // Convert URL slug to API slug for internal use
+  const bookSlug = urlBookSlug ? mapUrlSlugToApiSlug(urlBookSlug) : '';
+  
   const [selectedBook, setSelectedBook] = useState<string>(bookSlug || '');
   const [hadithNumber, setHadithNumber] = useState<number>(parseInt(hadithNumberStr || '1', 10));
   const [hadith, setHadith] = useState<Hadith | null>(null);
   const [loading, setLoading] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [chapterMetadata, setChapterMetadata] = useState<Record<string, { title: string; hadis_range: string }>>({});
 
   const currentBook = hadithBooks.find(book => book.slug === selectedBook);
 
@@ -54,6 +91,45 @@ export const HadithReader = () => {
     }
     return parseHadithSource(hadith.bn);
   }, [hadith]);
+
+  // Function to get metadata filename for each book
+  const getMetadataFilename = (bookSlug: string) => {
+    const filenameMap: Record<string, string> = {
+      'Bukhari': 'bukhari',
+      'Muslim': 'muslim',
+      'AbuDaud': 'abudaud',
+      'Ibne-Mazah': 'ibnemajah',
+      'Al-Nasai': 'nasai',
+      'At-tirmizi': 'tirmizi'
+    };
+    return filenameMap[bookSlug] || bookSlug.toLowerCase();
+  };
+
+  // Function to fetch chapter metadata
+  const fetchChapterMetadata = async (bookSlug: string) => {
+    if (chapterMetadata[bookSlug]) return; // Already loaded
+    try {
+      const metadataFilename = getMetadataFilename(bookSlug);
+      const response = await fetch(
+        `https://raw.githubusercontent.com/md-rifatkhan/hadithbangla/main/${bookSlug}/Meta/${metadataFilename}.json`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setChapterMetadata(prev => ({ ...prev, [bookSlug]: data }));
+      }
+    } catch (error) {
+      console.warn('Could not fetch chapter metadata:', error);
+    }
+  };
+
+  // Function to get chapter title
+  const getChapterTitle = (chapterNumber: string) => {
+    if (!selectedBook || !chapterMetadata[selectedBook]) {
+      return `অধ্যায় ${chapterNumber}`;
+    }
+    const metadata = chapterMetadata[selectedBook][chapterNumber];
+    return metadata ? metadata.title : `অধ্যায় ${chapterNumber}`;
+  };
 
   useEffect(() => {
     const fetchHadith = async (slug: string, id: number) => {
@@ -79,27 +155,31 @@ export const HadithReader = () => {
       }
     };
 
-    if (bookSlug && hadithNumberStr) {
-      const num = parseInt(hadithNumberStr, 10);
-      setSelectedBook(bookSlug);
+    if (urlBookSlug) {
+      const apiSlug = mapUrlSlugToApiSlug(urlBookSlug);
+      const num = parseInt(hadithNumberStr || '1', 10);
+      setSelectedBook(apiSlug);
       setHadithNumber(num);
-      fetchHadith(bookSlug, num);
-    } else if (!bookSlug) {
+      fetchHadith(apiSlug, num);
+      fetchChapterMetadata(apiSlug); // Fetch chapter metadata
+    } else if (!urlBookSlug) {
       // If no book is selected in the URL, default to Bukhari
-      navigate('/read/Bukhari/1', { replace: true });
+      navigate('/read/bukhari/1', { replace: true });
     }
-  }, [bookSlug, hadithNumberStr, toast, navigate]);
+  }, [urlBookSlug, hadithNumberStr, toast, navigate]);
 
-  const handleBookSelect = (slug: string) => {
-    setSelectedBook(slug);
-    navigate(`/read/${slug}/1`);
+  const handleBookSelect = (apiSlug: string) => {
+    setSelectedBook(apiSlug);
+    const urlSlug = mapApiSlugToUrlSlug(apiSlug);
+    navigate(`/read/${urlSlug}/1`);
   };
 
   const navigateHadith = (offset: number) => {
     if (currentBook) {
       const newHadithNumber = hadithNumber + offset;
       if (newHadithNumber > 0 && newHadithNumber <= currentBook.totalHadith) {
-        navigate(`/read/${selectedBook}/${newHadithNumber}`);
+        const urlSlug = mapApiSlugToUrlSlug(selectedBook);
+        navigate(`/read/${urlSlug}/${newHadithNumber}`);
       }
     }
   };
@@ -118,7 +198,7 @@ export const HadithReader = () => {
 
   const handleShare = async () => {
     const shareUrl = window.location.href;
-    const shareTitle = `হাদিসঃ ${currentBook?.name} - ${hadithNumber}`;
+    const shareTitle = `হাদিসঃ ${currentBook?.name} - ${toBanglaNumber(hadithNumber)}`;
     const shareText = parsedHadith.cleanText.substring(0, 100) + '...';
 
     if (navigator.share) {
@@ -143,8 +223,8 @@ export const HadithReader = () => {
   const handleCopy = () => {
     if (!hadith || !currentBook) return;
 
-    let textToCopy = `হাদিসঃ ${currentBook.name} - ${hadith.hadith_id}\n`;
-    textToCopy += `অধ্যায়: ${hadith.chapter_title}\n`;
+    let textToCopy = `হাদিসঃ ${currentBook.name} - ${toBanglaNumber(hadith.hadith_id)}\n`;
+    textToCopy += `অধ্যায়: ${getChapterTitle(hadith.chapter?.chapter_number || '০')}\n`;
     textToCopy += `বর্ণনাকারী: ${hadith.narrator}\n\n`;
 
     if (settings.arabicText && hadith.ar) {
@@ -220,10 +300,10 @@ export const HadithReader = () => {
               
               <div className="text-center">
                 <p className="font-bengali text-sm text-muted-foreground">হাদিস নম্বর</p>
-                <p className="font-bold text-lg">{hadithNumber}</p>
+                <p className="font-bold text-lg font-bengali">{toBanglaNumber(hadithNumber)}</p>
                 {currentBook && (
                   <p className="font-bengali text-xs text-muted-foreground">
-                    মোট {currentBook.totalHadith} টি হাদিস
+                    মোট {toBanglaNumber(currentBook.totalHadith)} টি হাদিস
                   </p>
                 )}
               </div>
@@ -256,10 +336,10 @@ export const HadithReader = () => {
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <CardTitle className="font-bengali text-gradient-primary mb-1">
-                  {currentBook?.name} - হাদিস নং {hadith.hadith_id}
+                  {currentBook?.name} - হাদিস নং {toBanglaNumber(hadith.hadith_id)}
                 </CardTitle>
                 <p className="font-bengali text-sm text-muted-foreground">
-                  অধ্যায়: {hadith.chapter_title}
+                  অধ্যায়: {getChapterTitle(hadith.chapter?.chapter_number || '০')}
                 </p>
               </div>
               <div className="flex items-center">

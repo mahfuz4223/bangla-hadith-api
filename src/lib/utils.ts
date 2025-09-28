@@ -27,3 +27,25 @@ export const parseHadithSource = (text: string) => {
     sources: [],
   };
 };
+
+// Convert English numbers to Bangla numbers
+export const toBanglaNumber = (number: string | number): string => {
+  const englishToBangla: Record<string, string> = {
+    '0': '০',
+    '1': '১',
+    '2': '২',
+    '3': '৩',
+    '4': '৪',
+    '5': '৫',
+    '6': '৬',
+    '7': '৭',
+    '8': '৮',
+    '9': '৯'
+  };
+
+  return number
+    .toString()
+    .split('')
+    .map(char => englishToBangla[char] || char)
+    .join('');
+};
