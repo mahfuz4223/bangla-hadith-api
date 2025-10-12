@@ -571,7 +571,7 @@ export const HomePage = () => {
                 <p className="text-sm text-muted-foreground font-bengali">বিনামূল্যে</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary mb-2">২৤/৭</div>
+                <div className="text-3xl font-bold text-primary mb-2">২৪/৭</div>
                 <p className="text-sm text-muted-foreground font-bengali">সেবা</p>
               </div>
             </div>

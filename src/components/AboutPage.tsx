@@ -248,9 +248,9 @@ export const AboutPage = () => {
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <ContributorCard
-              name="Mahfuz Rahman"
+              name="Mahfuz Ahmed"
               role="System Developer"
-              description="হাদিস বাংলা অ্যাপ্লিকেশন এবং API সিস্টেমের সম্পূর্ণ ডিজাইন ও ডেভেলপমেন্ট করেছেন মাহফুজ রহমান। তিনি একজন ফুল-স্ট্যাক সফটওয়্যার ডেভেলপার যিনি ইসলামিক প্রযুক্তি সমাধান তৈরিতে বিশেষজ্ঞ।"
+              description="হাদিস বাংলা অ্যাপ্লিকেশন এবং API সিস্টেমের সম্পূর্ণ ডিজাইন ও ডেভেলপমেন্ট করেছেন মাহফুজ আহমেদ। তিনি একজন তরুণ ডেভেলপার, যার শখ নতুন কিছু তৈরি করা এবং প্রযুক্তির মাধ্যমে উপকারে আসা প্রকল্প গড়ে তোলা।"
               githubUser="mahfuz4223"
               repoName="mahfuz4223/bangla-hadith-api"
             />

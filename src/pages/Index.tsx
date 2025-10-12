@@ -44,14 +44,14 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Important Links */}
+            {/* Resources */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-foreground font-bengali">গুরুত্বপূর্ণ লিংক</h3>
+              <h3 className="font-semibold text-foreground font-bengali">সম্পদ</h3>
               <div className="space-y-2">
-                <a href="https://quran.com/" target="_blank" rel="noopener noreferrer" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">Quran.com</a>
-                <a href="https://sunnah.com/" target="_blank" rel="noopener noreferrer" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">Sunnah.com</a>
-                <a href="https://islamhouse.com/" target="_blank" rel="noopener noreferrer" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">Islamhouse.com</a>
-                <a href="https://ihadis.com/" target="_blank" rel="noopener noreferrer" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">iHadis.com</a>
+                <a href="/search" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">উন্নত অনুসন্ধান</a>
+                <a href="/chapters" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">অধ্যায়সমূহ</a>
+                <a href="/favorites" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">পছন্দসমূহ</a>
+                <a href="/settings" className="block text-sm text-muted-foreground hover:text-primary font-bengali transition-colors">সেটিংস</a>
               </div>
             </div>
           </div>
@@ -62,7 +62,7 @@ const Index = () => {
               {/* Copyright */}
               <div className="text-center md:text-left">
                 <p className="text-sm text-muted-foreground font-bengali">
-                  © ২০২৪ হাদিস বাংলা। সর্বস্বত্ব সংরক্ষিত।
+                  © ২০২৫ হাদিস বাংলা। সর্বস্বত্ব সংরক্ষিত।
                 </p>
                 <p className="text-xs text-muted-foreground font-bengali mt-1">
                   সূত্র ব্যবহারের সময় দয়া করে যথাযথভাবে ক্রেডিট দিন।
