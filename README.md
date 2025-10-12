@@ -8,7 +8,7 @@
 
 **A comprehensive Bengali Hadith collection with modern web interface**
 
-[🚀 Live Demo](https://mahfuz4223.github.io/bangla-hadith-api) | [📚 API Docs](#api-documentation) | [🛠️ Installation](#installation)
+[🚀 Live Demo](https://bangla-hadith.netlify.app/) | [📚 API Docs](#api-documentation) | [🛠️ Installation](#installation)
 
 </div>
 
